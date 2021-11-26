@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import Container from "components/Container";
 import PageLoader from "components/PageLoader";
 
+import SideBar from "../SideBar";
+
 const Dashboard = () => {
   const [loading, setLoading] = useState(true);
 
@@ -21,9 +23,12 @@ const Dashboard = () => {
 
   return (
     <Container>
-      <h1 className="text-xl leading-5 text-center">
-        You have no articles created 😔
-      </h1>
+      <div className="flex flex-row">
+        <SideBar />
+        <h1 className="text-xl leading-5 text-center">
+          You have no articles created 😔
+        </h1>
+      </div>
     </Container>
   );
 };
