@@ -4,24 +4,25 @@ import { Search, Plus } from "@bigbinary/neeto-icons";
 import { Typography } from "@bigbinary/neetoui/v2";
 import { MenuBar } from "@bigbinary/neetoui/v2/layouts";
 
-import PageLoader from "./PageLoader";
+import articlesApi from "../../apis/articles";
+import PageLoader from "../PageLoader";
 
-import articlesApi from "../apis/articles";
-
-const SideBar = () => {
+const SideBar = ({ categories }) => {
   const [isSearchCollapsed, setIsSearchCollapsed] = useState(true);
-  const [allCount, setAllCount] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
   const [draftCount, setDraftCount] = useState(0);
   const [publishedCount, setPublishedCount] = useState(0);
+  const [categoryArticlesCount, setCategoryArticlesCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
   const getArticlesCount = async () => {
     try {
       const response = await articlesApi.getCount();
-      //logger.info(response)
-      setAllCount(response.data.total);
+      logger.info(response);
+      setTotalCount(response.data.total_count);
       setDraftCount(response.data.draft_count);
       setPublishedCount(response.data.published_count);
+      setCategoryArticlesCount(response.data.category_articles_count);
       setLoading(false);
     } catch (error) {
       logger.error(error);
@@ -41,7 +42,7 @@ const SideBar = () => {
   return (
     <div>
       <MenuBar showMenu={true} title="Articles">
-        <MenuBar.Block label="All" count={allCount} active />
+        <MenuBar.Block label="All" count={totalCount} active />
         <MenuBar.Block label="Draft" count={draftCount} />
         <MenuBar.Block label="Published" count={publishedCount} />
 
@@ -69,9 +70,14 @@ const SideBar = () => {
           collapse={isSearchCollapsed}
           onCollapse={() => setIsSearchCollapsed(true)}
         />
-        <MenuBar.Block label="Europe" count={80} />
-        <MenuBar.Block label="Middle-East" count={60} />
-        <MenuBar.Block label="Asia" count={60} />
+        {categories &&
+          categories.map(category => (
+            <MenuBar.Block
+              key={category.id}
+              label={category.name}
+              count={categoryArticlesCount[category.id] || 0}
+            />
+          ))}
       </MenuBar>
     </div>
   );
