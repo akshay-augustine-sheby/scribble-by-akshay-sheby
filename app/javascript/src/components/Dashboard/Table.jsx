@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 
 import { Edit, Delete } from "@bigbinary/neeto-icons";
-import { Button } from "@bigbinary/neetoui/v2";
+import { Button, Dropdown, Checkbox } from "@bigbinary/neetoui/v2";
 import moment from "moment-timezone";
 import { useTable } from "react-table";
 
@@ -61,15 +61,43 @@ const Table = ({ articles, deleteArticle, editArticle }) => {
     []
   );
 
-  const data = useMemo(() => articles, []);
+  const data = useMemo(() => [...articles], [articles]);
 
   const tableInstance = useTable({ columns, data });
 
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-    tableInstance;
-
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    rows,
+    prepareRow,
+    allColumns,
+  } = tableInstance;
   return (
     <div className="">
+      <div className="">
+        <Dropdown buttonStyle="secondary" label="Columns" position="bottom-end">
+          <div className="p-3">
+            <div className="space-y-3">
+              <div>Columns</div>
+              {allColumns.map(column => {
+                if (column.Header !== "") {
+                  return (
+                    <Checkbox
+                      checked
+                      id={column.id}
+                      label={column.Header}
+                      {...column.getToggleHiddenProps()}
+                    />
+                  );
+                }
+
+                return false;
+              })}
+            </div>
+          </div>
+        </Dropdown>
+      </div>
       <table
         {...getTableProps()}
         className="border border-collapse w-full border-black shadow-lg mb-10"

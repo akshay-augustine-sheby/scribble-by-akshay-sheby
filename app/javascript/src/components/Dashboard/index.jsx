@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 //import { isNil, isEmpty, either } from "ramda";
 
+import { Search, Plus } from "@bigbinary/neeto-icons";
+import { Input, Button } from "@bigbinary/neetoui/v2";
 import { isNil, isEmpty, either } from "ramda";
 
 import Container from "components/Container";
@@ -15,7 +17,9 @@ import categoriesApi from "../../apis/categories";
 const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [articles, setArticles] = useState([]);
+  const [filteredArticles, setFilteredArticles] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [searchString, setSearchString] = useState("");
 
   const fetchArticles = async () => {
     try {
@@ -57,10 +61,41 @@ const Dashboard = () => {
     history.push(`/articles/${id}/edit`);
   };
 
+  const handleAllArticles = () => {
+    setFilteredArticles([...articles]);
+  };
+
+  const handleDraftArticles = () => {
+    const articlesNew = articles.filter(article => {
+      return article.status === "draft";
+    });
+    setFilteredArticles([...articlesNew]);
+  };
+
+  const handlePublishedArticles = () => {
+    const articlesNew = articles.filter(article => {
+      return article.status === "published";
+    });
+    setFilteredArticles([...articlesNew]);
+  };
+
+  const handleCategories = categoryId => {
+    const articlesNew = articles.filter(article => {
+      return article.category_id === categoryId;
+    });
+    setFilteredArticles([...articlesNew]);
+  };
+
   useEffect(() => {
     fetchArticles();
     fetchCategories();
   }, []);
+
+  useEffect(() => {
+    setFilteredArticles([...articles]);
+  }, [articles]);
+
+  useEffect(() => {});
 
   if (loading) {
     return (
@@ -68,11 +103,17 @@ const Dashboard = () => {
         <PageLoader />
       </div>
     );
-  } else if (either(isNil, isEmpty)(articles, categories)) {
+  } else if (either(isNil, isEmpty)(filteredArticles, categories)) {
     return (
       <Container>
-        <div className="flex flex-row mt-10">
-          <SideBar />
+        <div className="flex flex-row space-x-5">
+          <SideBar
+            categories={categories}
+            handleAllArticles={handleAllArticles}
+            handleDraftArticles={handleDraftArticles}
+            handlePublishedArticles={handlePublishedArticles}
+            handleCategories={handleCategories}
+          />
           <div className="text-xl leading-5 text-center mt-10">
             You have not created any articles 😔
           </div>
@@ -84,17 +125,45 @@ const Dashboard = () => {
   return (
     <Container>
       <div className="flex flex-row space-x-5">
-        <SideBar articles={articles} categories={categories} />
-        <div className="flex flex-col space-y-5 mt-10">
-          <div className="text-lg font-bold ">Articles</div>
-          <div className="">
-            <Table
-              articles={articles}
-              deleteArticle={deleteArticle}
-              editArticle={editArticle}
-            />
+        <SideBar
+          categories={categories}
+          handleAllArticles={handleAllArticles}
+          handleDraftArticles={handleDraftArticles}
+          handlePublishedArticles={handlePublishedArticles}
+          handleCategories={handleCategories}
+        />
+        {filteredArticles === [] && <div>None</div>}
+        {filteredArticles !== [] && (
+          <div className="flex flex-col space-y-5 mt-10">
+            <div className="flex flex-row">
+              <Input
+                label=""
+                size="large"
+                value={searchString}
+                onChange={e => setSearchString(e.target.value)}
+                placeholder="Search article title"
+                prefix={<Search size={16} />}
+              />
+              <Button
+                href=""
+                icon={Plus}
+                iconPosition="right"
+                label="Add New Article"
+                onClick={function noRefCheck() {}}
+                style="primary"
+                to=""
+              />
+            </div>
+            <div className="text-lg font-bold ">Articles</div>
+            <div className="">
+              <Table
+                articles={[...filteredArticles]}
+                deleteArticle={deleteArticle}
+                editArticle={editArticle}
+              />
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </Container>
   );

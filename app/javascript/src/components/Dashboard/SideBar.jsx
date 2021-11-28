@@ -7,7 +7,13 @@ import { MenuBar } from "@bigbinary/neetoui/v2/layouts";
 import articlesApi from "../../apis/articles";
 import PageLoader from "../PageLoader";
 
-const SideBar = ({ categories }) => {
+const SideBar = ({
+  categories,
+  handleAllArticles,
+  handleDraftArticles,
+  handlePublishedArticles,
+  handleCategories,
+}) => {
   const [isSearchCollapsed, setIsSearchCollapsed] = useState(true);
   const [totalCount, setTotalCount] = useState(0);
   const [draftCount, setDraftCount] = useState(0);
@@ -42,9 +48,21 @@ const SideBar = ({ categories }) => {
   return (
     <div>
       <MenuBar showMenu={true} title="Articles">
-        <MenuBar.Block label="All" count={totalCount} active />
-        <MenuBar.Block label="Draft" count={draftCount} />
-        <MenuBar.Block label="Published" count={publishedCount} />
+        <MenuBar.Block
+          label="All"
+          count={totalCount}
+          onClick={handleAllArticles}
+        />
+        <MenuBar.Block
+          label="Draft"
+          count={draftCount}
+          onClick={handleDraftArticles}
+        />
+        <MenuBar.Block
+          label="Published"
+          count={publishedCount}
+          onClick={handlePublishedArticles}
+        />
 
         <MenuBar.SubTitle
           iconProps={[
@@ -76,6 +94,7 @@ const SideBar = ({ categories }) => {
               key={category.id}
               label={category.name}
               count={categoryArticlesCount[category.id] || 0}
+              onClick={() => handleCategories(category.id)}
             />
           ))}
       </MenuBar>
