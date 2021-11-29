@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 //import { isNil, isEmpty, either } from "ramda";
 
-import { Search, Plus } from "@bigbinary/neeto-icons";
-import { Input, Button } from "@bigbinary/neetoui/v2";
 import { isNil, isEmpty, either } from "ramda";
 
 import Container from "components/Container";
@@ -19,7 +17,6 @@ const Dashboard = () => {
   const [articles, setArticles] = useState([]);
   const [filteredArticles, setFilteredArticles] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [searchString, setSearchString] = useState("");
 
   const fetchArticles = async () => {
     try {
@@ -114,7 +111,7 @@ const Dashboard = () => {
             handlePublishedArticles={handlePublishedArticles}
             handleCategories={handleCategories}
           />
-          <div className="text-xl leading-5 text-center mt-10">
+          <div className="w-full text-xl leading-5 text-center mt-10">
             You have not created any articles 😔
           </div>
         </div>
@@ -124,7 +121,7 @@ const Dashboard = () => {
 
   return (
     <Container>
-      <div className="flex flex-row space-x-5">
+      <div className="flex flex-row">
         <SideBar
           categories={categories}
           handleAllArticles={handleAllArticles}
@@ -134,34 +131,12 @@ const Dashboard = () => {
         />
         {filteredArticles === [] && <div>None</div>}
         {filteredArticles !== [] && (
-          <div className="flex flex-col space-y-5 mt-10">
-            <div className="flex flex-row">
-              <Input
-                label=""
-                size="large"
-                value={searchString}
-                onChange={e => setSearchString(e.target.value)}
-                placeholder="Search article title"
-                prefix={<Search size={16} />}
-              />
-              <Button
-                href=""
-                icon={Plus}
-                iconPosition="right"
-                label="Add New Article"
-                onClick={function noRefCheck() {}}
-                style="primary"
-                to=""
-              />
-            </div>
-            <div className="text-lg font-bold ">Articles</div>
-            <div className="">
-              <Table
-                articles={[...filteredArticles]}
-                deleteArticle={deleteArticle}
-                editArticle={editArticle}
-              />
-            </div>
+          <div className="w-full p-5">
+            <Table
+              articles={[...filteredArticles]}
+              deleteArticle={deleteArticle}
+              editArticle={editArticle}
+            />
           </div>
         )}
       </div>

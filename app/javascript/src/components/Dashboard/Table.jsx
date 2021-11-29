@@ -1,9 +1,10 @@
 import React, { useMemo } from "react";
 
 import { Edit, Delete } from "@bigbinary/neeto-icons";
-import { Button, Dropdown, Checkbox } from "@bigbinary/neetoui/v2";
+import { Search, Plus } from "@bigbinary/neeto-icons";
+import { Button, Dropdown, Checkbox, Input } from "@bigbinary/neetoui/v2";
 import moment from "moment-timezone";
-import { useTable } from "react-table";
+import { useFilters, useTable } from "react-table";
 
 const Table = ({ articles, deleteArticle, editArticle }) => {
   const columns = useMemo(
@@ -11,7 +12,11 @@ const Table = ({ articles, deleteArticle, editArticle }) => {
       {
         Header: "TITLE",
         accessor: "title",
-        Cell: props => <div>{props.cell.row.values.title}</div>,
+        Cell: props => (
+          <div className="text-custom-indigo">
+            {props.cell.row.values.title}
+          </div>
+        ),
       },
       {
         Header: "DATE",
@@ -41,7 +46,7 @@ const Table = ({ articles, deleteArticle, editArticle }) => {
         Header: "",
         accessor: "id",
         Cell: ({ value }) => (
-          <div className="flex flex-row align-middle justify-around px-1 py-2">
+          <div className="flex flex-row align-middle justify-center space-x-2 px-1 py-2">
             <Button
               onClick={() => deleteArticle(value)}
               style="secondary"
@@ -61,9 +66,14 @@ const Table = ({ articles, deleteArticle, editArticle }) => {
     []
   );
 
+  const customClass = id => {
+    if (id % 2 !== 0) return "bg-custom-row-color";
+
+    return "";
+  };
   const data = useMemo(() => [...articles], [articles]);
 
-  const tableInstance = useTable({ columns, data });
+  const tableInstance = useTable({ columns, data }, useFilters);
 
   const {
     getTableProps,
@@ -72,10 +82,20 @@ const Table = ({ articles, deleteArticle, editArticle }) => {
     rows,
     prepareRow,
     allColumns,
+    setFilter,
   } = tableInstance;
   return (
-    <div className="">
-      <div className="">
+    <div className="flex flex-col space-y-6 mt-2">
+      <div className="flex flex-row space-x-3 place-items-center justify-end">
+        <div className="w-1/3">
+          <Input
+            label=""
+            size="small"
+            onChange={e => setFilter("title", e.target.value)}
+            placeholder="Search article title"
+            prefix={<Search size={16} />}
+          />
+        </div>
         <Dropdown buttonStyle="secondary" label="Columns" position="bottom-end">
           <div className="p-3">
             <div className="space-y-3">
@@ -97,23 +117,30 @@ const Table = ({ articles, deleteArticle, editArticle }) => {
             </div>
           </div>
         </Dropdown>
+        <Button
+          href=""
+          icon={Plus}
+          iconPosition="right"
+          label="Add New Article"
+          onClick={function noRefCheck() {}}
+          style="primary"
+          to=""
+        />
       </div>
-      <table
-        {...getTableProps()}
-        className="border border-collapse w-full border-black shadow-lg mb-10"
-      >
+      <div className="text-lg font-bold ">{rows.length} Articles</div>
+      <table {...getTableProps()} className="w-full mb-10">
         <thead>
           {headerGroups.map(headerGroup => (
             <tr
               key={headerGroup.id}
               {...headerGroup.getHeaderGroupProps()}
-              className="border border-black"
+              className=""
             >
               {headerGroup.headers.map(column => (
                 <th
                   key={column.id}
                   {...column.getHeaderProps()}
-                  className="border w-3/4 bg-gray-400 border-gray-400"
+                  className="text-left font-medium text-custom-grey h-10"
                 >
                   {column.render("Header")}
                 </th>
@@ -122,20 +149,20 @@ const Table = ({ articles, deleteArticle, editArticle }) => {
           ))}
         </thead>
         <tbody key="" {...getTableBodyProps()}>
-          {rows.map(row => {
+          {rows.map((row, id) => {
             prepareRow(row);
             return (
               <tr
                 key={row.id}
                 {...row.getRowProps()}
-                className="border border-gray-400"
+                className={customClass(id)}
               >
                 {row.cells.map(cell => {
                   return (
                     <td
                       key={cell.id}
                       {...cell.getCellProps()}
-                      className="border px-3 border-gray-400 font-medium cursor-pointer"
+                      className="font-medium"
                     >
                       {cell.render("Cell")}
                     </td>
