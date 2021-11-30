@@ -1,0 +1,14 @@
+default: &default
+  adapter: sqlite3
+  host: 127.0.0.1
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 10 } %>
+
+development:
+  <<: *default
+  database: scribble-by-akshay-sheby_development
+
+test:
+  <<: *default
+  user: sqlite3
+  database: scribble-by-akshay-sheby_test<%= ENV['CIRCLE_NODE_INDEX'] %>
