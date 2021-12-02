@@ -6,7 +6,7 @@ import { Button, Dropdown, Checkbox, Input } from "@bigbinary/neetoui/v2";
 import moment from "moment-timezone";
 import { useFilters, useTable } from "react-table";
 
-const Table = ({ articles, deleteArticle, editArticle }) => {
+const Table = ({ articles, deleteArticle, editArticle, createArticle }) => {
   const columns = useMemo(
     () => [
       {
@@ -71,6 +71,7 @@ const Table = ({ articles, deleteArticle, editArticle }) => {
 
     return "";
   };
+
   const data = useMemo(() => [...articles], [articles]);
 
   const tableInstance = useTable({ columns, data }, useFilters);
@@ -122,7 +123,7 @@ const Table = ({ articles, deleteArticle, editArticle }) => {
           icon={Plus}
           iconPosition="right"
           label="Add New Article"
-          onClick={function noRefCheck() {}}
+          onClick={createArticle}
           style="primary"
           to=""
         />
