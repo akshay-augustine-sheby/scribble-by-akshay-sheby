@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ArticlesController < ApplicationController
-  before_action :load_article, only: %i[update destroy]
+  before_action :load_article, only: %i[update show]
 
   def get_articles_count
     count = Article.get_count()
@@ -27,6 +27,19 @@ class ArticlesController < ApplicationController
       errors = article.errors.full_messages.to_sentence
       render status: :unprocessable_entity, json: { error: errors }
     end
+  end
+
+  def update
+    if @article.update(article_params)
+      render status: :ok, json: { notice: t("successfully_updated", entity: "Article") }
+    else
+      errors = @article.errors.full_messages.to_sentence
+      render status: :unprocessable_entity, json: { error: errors }
+    end
+  end
+
+  def show
+    render status: :ok, json: { article: @article }
   end
 
   private

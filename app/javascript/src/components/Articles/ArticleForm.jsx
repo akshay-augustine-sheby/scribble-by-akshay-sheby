@@ -58,7 +58,7 @@ const ArticleForm = ({
                 value: category.id,
               };
             })}
-            placeholder="Category"
+            placeholder="Select a category"
             onChange={val => setCategoryId(val)}
             size="small"
             required
