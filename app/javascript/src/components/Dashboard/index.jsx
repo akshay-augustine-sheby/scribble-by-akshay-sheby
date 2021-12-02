@@ -11,6 +11,7 @@ import Table from "./Table";
 import articlesApi from "../../apis/articles";
 import categoriesApi from "../../apis/categories";
 import CreateArticle from "../Articles/CreateArticle";
+import EditArticle from "../Articles/EditArticle";
 
 const CategoryContext = createContext();
 
@@ -20,12 +21,27 @@ const Dashboard = () => {
   const [filteredArticles, setFilteredArticles] = useState([]);
   const [categories, setCategories] = useState([]);
   const [articlePage, setArticlePage] = useState(false);
+  const [articleId, setArticleId] = useState("");
+  const [articleDetails, setArticleDetails] = useState({});
 
   const fetchArticles = async () => {
     try {
       const response = await articlesApi.list();
       logger.info(response);
       setArticles(response.data.articles);
+      setLoading(false);
+    } catch (error) {
+      logger.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchArticleDetails = async articleId => {
+    try {
+      setLoading(true);
+      const response = await articlesApi.show(articleId);
+      setArticleDetails(response.data.article);
       setLoading(false);
     } catch (error) {
       logger.error(error);
@@ -54,15 +70,18 @@ const Dashboard = () => {
 
   const deleteArticle = async id => {
     try {
-      await articlesApi.destroy(id);
-      await fetchArticles();
+      if (window.confirm("Are you sure you wish to delete this item?")) {
+        await articlesApi.destroy(id);
+        await fetchArticles();
+      }
     } catch (error) {
       logger.error(error);
     }
   };
 
   const editArticle = id => {
-    history.push(`/articles/${id}/edit`);
+    setArticleId(id);
+    setArticlePage(true);
   };
 
   const handleAllArticles = () => {
@@ -99,7 +118,9 @@ const Dashboard = () => {
     setFilteredArticles([...articles]);
   }, [articles]);
 
-  useEffect(() => {});
+  useEffect(() => {
+    fetchArticleDetails(articleId);
+  }, [articleId]);
 
   if (loading) {
     return (
@@ -129,7 +150,18 @@ const Dashboard = () => {
   return (
     <Container>
       <CategoryContext.Provider value={categories}>
-        {articlePage && (
+        {articlePage && articleId !== "" && (
+          <EditArticle
+            setArticlePage={setArticlePage}
+            loading={loading}
+            setLoading={setLoading}
+            fetchArticles={fetchArticles}
+            fetchArticleDetails={fetchArticleDetails}
+            articleId={articleId}
+            articleDetails={articleDetails}
+          />
+        )}
+        {articlePage && articleId === "" && (
           <CreateArticle
             setArticlePage={setArticlePage}
             loading={loading}
