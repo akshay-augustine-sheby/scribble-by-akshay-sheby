@@ -18,6 +18,17 @@ class ArticlesController < ApplicationController
     render status: :ok, json: { articles: articles }
   end
 
+  def create
+    article = Article.new(article_params.merge(author: "Oliver Smith"))
+    if article.save
+      render status: :ok,
+        json: { notice: t("successfully_created", entity: "Article") }
+    else
+      errors = article.errors.full_messages.to_sentence
+      render status: :unprocessable_entity, json: { error: errors }
+    end
+  end
+
   private
 
     def article_params

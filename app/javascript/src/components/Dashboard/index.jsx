@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-//import { isNil, isEmpty, either } from "ramda";
+import React, { useState, useEffect, createContext } from "react";
 
 import { isNil, isEmpty, either } from "ramda";
 
@@ -11,12 +10,16 @@ import Table from "./Table";
 
 import articlesApi from "../../apis/articles";
 import categoriesApi from "../../apis/categories";
+import CreateArticle from "../Articles/CreateArticle";
+
+const CategoryContext = createContext();
 
 const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [articles, setArticles] = useState([]);
   const [filteredArticles, setFilteredArticles] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [articlePage, setArticlePage] = useState(false);
 
   const fetchArticles = async () => {
     try {
@@ -43,6 +46,10 @@ const Dashboard = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const createArticle = () => {
+    setArticlePage(true);
   };
 
   const deleteArticle = async id => {
@@ -121,27 +128,38 @@ const Dashboard = () => {
 
   return (
     <Container>
-      <div className="flex flex-row">
-        <SideBar
-          categories={categories}
-          handleAllArticles={handleAllArticles}
-          handleDraftArticles={handleDraftArticles}
-          handlePublishedArticles={handlePublishedArticles}
-          handleCategories={handleCategories}
-        />
-        {filteredArticles === [] && <div>None</div>}
-        {filteredArticles !== [] && (
-          <div className="w-full p-5">
-            <Table
-              articles={[...filteredArticles]}
-              deleteArticle={deleteArticle}
-              editArticle={editArticle}
+      <CategoryContext.Provider value={categories}>
+        {articlePage && (
+          <CreateArticle
+            setArticlePage={setArticlePage}
+            loading={loading}
+            setLoading={setLoading}
+            fetchArticles={fetchArticles}
+          />
+        )}
+        {!articlePage && (
+          <div className="flex flex-row">
+            <SideBar
+              categories={categories}
+              handleAllArticles={handleAllArticles}
+              handleDraftArticles={handleDraftArticles}
+              handlePublishedArticles={handlePublishedArticles}
+              handleCategories={handleCategories}
             />
+            <div className="w-full p-5">
+              <Table
+                articles={[...filteredArticles]}
+                deleteArticle={deleteArticle}
+                editArticle={editArticle}
+                createArticle={createArticle}
+              />
+            </div>
           </div>
         )}
-      </div>
+      </CategoryContext.Provider>
     </Container>
   );
 };
 
 export default Dashboard;
+export { CategoryContext };
