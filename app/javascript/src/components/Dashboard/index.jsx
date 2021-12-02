@@ -70,8 +70,10 @@ const Dashboard = () => {
 
   const deleteArticle = async id => {
     try {
-      await articlesApi.destroy(id);
-      await fetchArticles();
+      if (window.confirm("Are you sure you wish to delete this item?")) {
+        await articlesApi.destroy(id);
+        await fetchArticles();
+      }
     } catch (error) {
       logger.error(error);
     }
