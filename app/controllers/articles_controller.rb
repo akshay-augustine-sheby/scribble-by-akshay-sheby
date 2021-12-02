@@ -25,7 +25,7 @@ class ArticlesController < ApplicationController
         json: { notice: t("successfully_created", entity: "Article") }
     else
       errors = article.errors.full_messages.to_sentence
-      render status: :unprocessable_entity, json: { errors: errors }
+      render status: :unprocessable_entity, json: { error: errors }
     end
   end
 

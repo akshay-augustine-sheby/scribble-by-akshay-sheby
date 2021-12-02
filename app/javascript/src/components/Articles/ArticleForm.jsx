@@ -61,6 +61,7 @@ const ArticleForm = ({
             placeholder="Category"
             onChange={val => setCategoryId(val)}
             size="small"
+            required
           />
         </div>
         <Textarea
@@ -68,6 +69,7 @@ const ArticleForm = ({
           placeholder="Enter text"
           value={body}
           onChange={e => setBody(e.target.value)}
+          required
         />
         <div className="flex flex-row space-x-2">
           <div className="flex flex-row">
