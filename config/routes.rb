@@ -3,7 +3,7 @@
 Rails.application.routes.draw do
   defaults format: :json do
     resources :articles, except: %i[new edit], param: :id
-    resources :categories, only: %i[index]
+    resources :categories, only: %i[index create]
   end
 
   root "home#index"

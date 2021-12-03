@@ -31,7 +31,6 @@ const Dashboard = () => {
   const fetchArticles = async () => {
     try {
       const response = await articlesApi.list();
-      logger.info(response);
       setArticles(response.data.articles);
       setLoading(false);
     } catch (error) {
@@ -44,7 +43,6 @@ const Dashboard = () => {
   const getArticlesCount = async () => {
     try {
       const response = await articlesApi.getCount();
-      logger.info(response);
       setTotalCount(response.data.total_count);
       setDraftCount(response.data.draft_count);
       setPublishedCount(response.data.published_count);
@@ -74,7 +72,6 @@ const Dashboard = () => {
     try {
       setLoading(true);
       const response = await categoriesApi.list();
-      logger.info(response);
       setCategories(response.data.categories);
       setLoading(false);
     } catch (error) {
@@ -103,6 +100,24 @@ const Dashboard = () => {
   const editArticle = id => {
     setArticleId(id);
     setArticlePage(true);
+  };
+
+  const handleCreateCategory = async categoryName => {
+    try {
+      setLoading(true);
+      await categoriesApi.create({
+        category: {
+          name: categoryName,
+        },
+      });
+      setLoading(false);
+      fetchArticles();
+      fetchCategories();
+      getArticlesCount();
+    } catch (error) {
+      logger.error(error);
+      setLoading(false);
+    }
   };
 
   const handleAllArticles = () => {
@@ -164,6 +179,7 @@ const Dashboard = () => {
             draftCount={draftCount}
             publishedCount={publishedCount}
             categoryArticlesCount={categoryArticlesCount}
+            handleCreateCategory={handleCreateCategory}
           />
           <div className="w-full text-xl leading-5 text-center mt-10">
             You have not created any articles 😔
@@ -208,6 +224,7 @@ const Dashboard = () => {
               draftCount={draftCount}
               publishedCount={publishedCount}
               categoryArticlesCount={categoryArticlesCount}
+              handleCreateCategory={handleCreateCategory}
             />
             <div className="w-full p-5">
               <Table

@@ -14,6 +14,7 @@ const SideBar = ({
   draftCount,
   publishedCount,
   categoryArticlesCount,
+  handleCreateCategory,
 }) => {
   const [isSearchCollapsed, setIsSearchCollapsed] = useState(true);
   const [isAddNewCollapsed, setIsAddNewCollapsed] = useState(true);
@@ -108,7 +109,12 @@ const SideBar = ({
               onChange={e => setAddNewValue(e.target.value)}
               placeholder="Add new category"
             />
-            <Button onClick={() => {}} size="large" style="text" icon={Check} />
+            <Button
+              onClick={() => handleCreateCategory(addNewValue)}
+              size="large"
+              style="text"
+              icon={Check}
+            />
           </div>
         )}
         {categories &&
