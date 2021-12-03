@@ -88,9 +88,11 @@ const Dashboard = () => {
   const deleteArticle = async id => {
     try {
       if (window.confirm("Are you sure you wish to delete this item?")) {
+        setLoading(true);
         await articlesApi.destroy(id);
         await fetchArticles();
         await getArticlesCount();
+        setLoading(false);
       }
     } catch (error) {
       logger.error(error);
