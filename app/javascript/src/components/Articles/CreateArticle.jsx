@@ -9,6 +9,7 @@ const CreateArticle = ({
   loading,
   setLoading,
   fetchArticles,
+  getArticlesCount,
 }) => {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
@@ -30,6 +31,7 @@ const CreateArticle = ({
       setLoading(false);
       setArticlePage(false);
       fetchArticles();
+      getArticlesCount();
     } catch (error) {
       logger.error(error);
       setLoading(false);

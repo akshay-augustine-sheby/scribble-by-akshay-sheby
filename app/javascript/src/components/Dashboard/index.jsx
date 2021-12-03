@@ -23,12 +23,32 @@ const Dashboard = () => {
   const [articlePage, setArticlePage] = useState(false);
   const [articleId, setArticleId] = useState("");
   const [articleDetails, setArticleDetails] = useState({});
+  const [totalCount, setTotalCount] = useState(0);
+  const [draftCount, setDraftCount] = useState(0);
+  const [publishedCount, setPublishedCount] = useState(0);
+  const [categoryArticlesCount, setCategoryArticlesCount] = useState(0);
 
   const fetchArticles = async () => {
     try {
       const response = await articlesApi.list();
       logger.info(response);
       setArticles(response.data.articles);
+      setLoading(false);
+    } catch (error) {
+      logger.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getArticlesCount = async () => {
+    try {
+      const response = await articlesApi.getCount();
+      logger.info(response);
+      setTotalCount(response.data.total_count);
+      setDraftCount(response.data.draft_count);
+      setPublishedCount(response.data.published_count);
+      setCategoryArticlesCount(response.data.category_articles_count);
       setLoading(false);
     } catch (error) {
       logger.error(error);
@@ -73,6 +93,7 @@ const Dashboard = () => {
       if (window.confirm("Are you sure you wish to delete this item?")) {
         await articlesApi.destroy(id);
         await fetchArticles();
+        await getArticlesCount();
       }
     } catch (error) {
       logger.error(error);
@@ -112,6 +133,7 @@ const Dashboard = () => {
   useEffect(() => {
     fetchArticles();
     fetchCategories();
+    getArticlesCount();
   }, []);
 
   useEffect(() => {
@@ -138,6 +160,10 @@ const Dashboard = () => {
             handleDraftArticles={handleDraftArticles}
             handlePublishedArticles={handlePublishedArticles}
             handleCategories={handleCategories}
+            totalCount={totalCount}
+            draftCount={draftCount}
+            publishedCount={publishedCount}
+            categoryArticlesCount={categoryArticlesCount}
           />
           <div className="w-full text-xl leading-5 text-center mt-10">
             You have not created any articles 😔
@@ -167,6 +193,7 @@ const Dashboard = () => {
             loading={loading}
             setLoading={setLoading}
             fetchArticles={fetchArticles}
+            getArticlesCount={getArticlesCount}
           />
         )}
         {!articlePage && (
@@ -177,6 +204,10 @@ const Dashboard = () => {
               handleDraftArticles={handleDraftArticles}
               handlePublishedArticles={handlePublishedArticles}
               handleCategories={handleCategories}
+              totalCount={totalCount}
+              draftCount={draftCount}
+              publishedCount={publishedCount}
+              categoryArticlesCount={categoryArticlesCount}
             />
             <div className="w-full p-5">
               <Table
