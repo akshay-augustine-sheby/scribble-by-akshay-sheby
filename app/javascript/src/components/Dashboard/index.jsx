@@ -1,7 +1,5 @@
 import React, { useState, useEffect, createContext } from "react";
 
-import { isNil, isEmpty, either } from "ramda";
-
 import Container from "components/Container";
 import PageLoader from "components/PageLoader";
 
@@ -20,15 +18,36 @@ const Dashboard = () => {
   const [articles, setArticles] = useState([]);
   const [filteredArticles, setFilteredArticles] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [articlePage, setArticlePage] = useState(false);
+  const [editArticlePage, setEditArticlePage] = useState(false);
+  const [createArticlePage, setCreateArticlePage] = useState(false);
   const [articleId, setArticleId] = useState("");
   const [articleDetails, setArticleDetails] = useState({});
+  const [totalCount, setTotalCount] = useState(0);
+  const [draftCount, setDraftCount] = useState(0);
+  const [publishedCount, setPublishedCount] = useState(0);
+  const [categoryArticlesCount, setCategoryArticlesCount] = useState(0);
 
   const fetchArticles = async () => {
     try {
+      setLoading(true);
       const response = await articlesApi.list();
-      logger.info(response);
       setArticles(response.data.articles);
+      setLoading(false);
+    } catch (error) {
+      logger.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getArticlesCount = async () => {
+    try {
+      setLoading(true);
+      const response = await articlesApi.getCount();
+      setTotalCount(response.data.total_count);
+      setDraftCount(response.data.draft_count);
+      setPublishedCount(response.data.published_count);
+      setCategoryArticlesCount(response.data.category_articles_count);
       setLoading(false);
     } catch (error) {
       logger.error(error);
@@ -54,7 +73,6 @@ const Dashboard = () => {
     try {
       setLoading(true);
       const response = await categoriesApi.list();
-      logger.info(response);
       setCategories(response.data.categories);
       setLoading(false);
     } catch (error) {
@@ -65,14 +83,17 @@ const Dashboard = () => {
   };
 
   const createArticle = () => {
-    setArticlePage(true);
+    setCreateArticlePage(true);
   };
 
   const deleteArticle = async id => {
     try {
       if (window.confirm("Are you sure you wish to delete this item?")) {
+        setLoading(true);
         await articlesApi.destroy(id);
         await fetchArticles();
+        await getArticlesCount();
+        setLoading(false);
       }
     } catch (error) {
       logger.error(error);
@@ -81,7 +102,25 @@ const Dashboard = () => {
 
   const editArticle = id => {
     setArticleId(id);
-    setArticlePage(true);
+    setEditArticlePage(true);
+  };
+
+  const handleCreateCategory = async categoryName => {
+    try {
+      setLoading(true);
+      await categoriesApi.create({
+        category: {
+          name: categoryName,
+        },
+      });
+      await fetchArticles();
+      await fetchCategories();
+      await getArticlesCount();
+      setLoading(false);
+    } catch (error) {
+      logger.error(error);
+      setLoading(false);
+    }
   };
 
   const handleAllArticles = () => {
@@ -112,6 +151,7 @@ const Dashboard = () => {
   useEffect(() => {
     fetchArticles();
     fetchCategories();
+    getArticlesCount();
   }, []);
 
   useEffect(() => {
@@ -128,48 +168,34 @@ const Dashboard = () => {
         <PageLoader />
       </div>
     );
-  } else if (either(isNil, isEmpty)(filteredArticles, categories)) {
-    return (
-      <Container>
-        <div className="flex flex-row space-x-5">
-          <SideBar
-            categories={categories}
-            handleAllArticles={handleAllArticles}
-            handleDraftArticles={handleDraftArticles}
-            handlePublishedArticles={handlePublishedArticles}
-            handleCategories={handleCategories}
-          />
-          <div className="w-full text-xl leading-5 text-center mt-10">
-            You have not created any articles 😔
-          </div>
-        </div>
-      </Container>
-    );
   }
 
   return (
     <Container>
       <CategoryContext.Provider value={categories}>
-        {articlePage && articleId !== "" && (
+        {editArticlePage && (
           <EditArticle
-            setArticlePage={setArticlePage}
+            setEditArticlePage={setEditArticlePage}
+            editArticlePage={editArticlePage}
             loading={loading}
             setLoading={setLoading}
             fetchArticles={fetchArticles}
+            getArticlesCount={getArticlesCount}
             fetchArticleDetails={fetchArticleDetails}
             articleId={articleId}
             articleDetails={articleDetails}
           />
         )}
-        {articlePage && articleId === "" && (
+        {createArticlePage && (
           <CreateArticle
-            setArticlePage={setArticlePage}
+            setCreateArticlePage={setCreateArticlePage}
             loading={loading}
             setLoading={setLoading}
             fetchArticles={fetchArticles}
+            getArticlesCount={getArticlesCount}
           />
         )}
-        {!articlePage && (
+        {!createArticlePage && !editArticlePage && (
           <div className="flex flex-row">
             <SideBar
               categories={categories}
@@ -177,6 +203,11 @@ const Dashboard = () => {
               handleDraftArticles={handleDraftArticles}
               handlePublishedArticles={handlePublishedArticles}
               handleCategories={handleCategories}
+              totalCount={totalCount}
+              draftCount={draftCount}
+              publishedCount={publishedCount}
+              categoryArticlesCount={categoryArticlesCount}
+              handleCreateCategory={handleCreateCategory}
             />
             <div className="w-full p-5">
               <Table

@@ -5,10 +5,11 @@ import ArticleForm from "./ArticleForm";
 import articlesApi from "../../apis/articles";
 
 const CreateArticle = ({
-  setArticlePage,
+  setCreateArticlePage,
   loading,
   setLoading,
   fetchArticles,
+  getArticlesCount,
 }) => {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
@@ -27,9 +28,10 @@ const CreateArticle = ({
           category_id: categoryId.value,
         },
       });
+      setCreateArticlePage(false);
+      await fetchArticles();
+      await getArticlesCount();
       setLoading(false);
-      setArticlePage(false);
-      fetchArticles();
     } catch (error) {
       logger.error(error);
       setLoading(false);
@@ -47,7 +49,7 @@ const CreateArticle = ({
         setStatus={setStatus}
         categoryId={categoryId}
         setCategoryId={setCategoryId}
-        setArticlePage={setArticlePage}
+        setCreateArticlePage={setCreateArticlePage}
         handleSave={handleSave}
         loading={loading}
         setLoading={setLoading}

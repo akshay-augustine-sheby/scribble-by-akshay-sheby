@@ -1,11 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
-import { Search, Plus } from "@bigbinary/neeto-icons";
-import { Typography } from "@bigbinary/neetoui/v2";
+import { Search, Plus, Check } from "@bigbinary/neeto-icons";
+import { Typography, Input, Button } from "@bigbinary/neetoui/v2";
 import { MenuBar } from "@bigbinary/neetoui/v2/layouts";
-
-import articlesApi from "../../apis/articles";
-import PageLoader from "../PageLoader";
 
 const SideBar = ({
   categories,
@@ -13,42 +10,20 @@ const SideBar = ({
   handleDraftArticles,
   handlePublishedArticles,
   handleCategories,
+  totalCount,
+  draftCount,
+  publishedCount,
+  categoryArticlesCount,
+  handleCreateCategory,
 }) => {
   const [isSearchCollapsed, setIsSearchCollapsed] = useState(true);
-  const [totalCount, setTotalCount] = useState(0);
-  const [draftCount, setDraftCount] = useState(0);
-  const [publishedCount, setPublishedCount] = useState(0);
-  const [categoryArticlesCount, setCategoryArticlesCount] = useState(0);
+  const [isAddNewCollapsed, setIsAddNewCollapsed] = useState(true);
   const [searchValue, setSearchValue] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [addNewValue, setAddNewValue] = useState("");
   const [activeCategoryId, setActiveCategoryId] = useState("");
   const [allActive, setAllActive] = useState(false);
   const [draftActive, setDraftActive] = useState(false);
   const [publishedActive, setPublishedActive] = useState(false);
-
-  const getArticlesCount = async () => {
-    try {
-      const response = await articlesApi.getCount();
-      logger.info(response);
-      setTotalCount(response.data.total_count);
-      setDraftCount(response.data.draft_count);
-      setPublishedCount(response.data.published_count);
-      setCategoryArticlesCount(response.data.category_articles_count);
-      setLoading(false);
-    } catch (error) {
-      logger.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getArticlesCount();
-  }, []);
-
-  if (loading) {
-    <PageLoader />;
-  }
 
   return (
     <div>
@@ -94,10 +69,17 @@ const SideBar = ({
           iconProps={[
             {
               icon: Search,
-              onClick: () => setIsSearchCollapsed(!isSearchCollapsed),
+              onClick: () => {
+                setIsSearchCollapsed(!isSearchCollapsed);
+                setIsAddNewCollapsed(true);
+              },
             },
             {
               icon: Plus,
+              onClick: () => {
+                setIsAddNewCollapsed(!isAddNewCollapsed);
+                setIsSearchCollapsed(true);
+              },
             },
           ]}
         >
@@ -118,6 +100,23 @@ const SideBar = ({
             setSearchValue(e.target.value);
           }}
         />
+        {!isAddNewCollapsed && (
+          <div className="flex flex-row mb-5 space-x-1">
+            <Input
+              label=""
+              size="small"
+              value={addNewValue}
+              onChange={e => setAddNewValue(e.target.value)}
+              placeholder="Add new category"
+            />
+            <Button
+              onClick={() => handleCreateCategory(addNewValue)}
+              size="large"
+              style="text"
+              icon={Check}
+            />
+          </div>
+        )}
         {categories &&
           categories.map(category => {
             if (

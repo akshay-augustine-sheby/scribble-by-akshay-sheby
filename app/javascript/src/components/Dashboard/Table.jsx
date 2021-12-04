@@ -20,10 +20,14 @@ const Table = ({ articles, deleteArticle, editArticle, createArticle }) => {
       },
       {
         Header: "DATE",
-        accessor: "updated_at",
+        accessor: "published_at",
         Cell: props => (
           <div>
-            {moment(props.cell.row.values.updated_at).format("MMMM Do, YYYY")}
+            {props.cell.row.values.published_at
+              ? moment(props.cell.row.values.published_at).format(
+                  "MMMM Do, YYYY"
+                )
+              : "-"}
           </div>
         ),
       },
@@ -88,36 +92,44 @@ const Table = ({ articles, deleteArticle, editArticle, createArticle }) => {
   return (
     <div className="flex flex-col space-y-6 mt-2">
       <div className="flex flex-row space-x-3 place-items-center justify-end">
-        <div className="w-1/3">
-          <Input
-            label=""
-            size="small"
-            onChange={e => setFilter("title", e.target.value)}
-            placeholder="Search article title"
-            prefix={<Search size={16} />}
-          />
-        </div>
-        <Dropdown buttonStyle="secondary" label="Columns" position="bottom-end">
-          <div className="p-3">
-            <div className="space-y-3">
-              <div>Columns</div>
-              {allColumns.map(column => {
-                if (column.Header !== "") {
-                  return (
-                    <Checkbox
-                      checked
-                      id={column.id}
-                      label={column.Header}
-                      {...column.getToggleHiddenProps()}
-                    />
-                  );
-                }
-
-                return false;
-              })}
-            </div>
+        {rows.length > 0 && (
+          <div className="w-1/3">
+            <Input
+              label=""
+              size="small"
+              onChange={e => setFilter("title", e.target.value)}
+              placeholder="Search article title"
+              prefix={<Search size={16} />}
+            />
           </div>
-        </Dropdown>
+        )}
+        {rows.length > 0 && (
+          <Dropdown
+            buttonStyle="secondary"
+            label="Columns"
+            position="bottom-end"
+          >
+            <div className="p-3">
+              <div className="space-y-3">
+                <div>Columns</div>
+                {allColumns.map(column => {
+                  if (column.Header !== "") {
+                    return (
+                      <Checkbox
+                        checked
+                        id={column.id}
+                        label={column.Header}
+                        {...column.getToggleHiddenProps()}
+                      />
+                    );
+                  }
+
+                  return false;
+                })}
+              </div>
+            </div>
+          </Dropdown>
+        )}
         <Button
           href=""
           icon={Plus}
@@ -128,52 +140,61 @@ const Table = ({ articles, deleteArticle, editArticle, createArticle }) => {
           to=""
         />
       </div>
-      <div className="text-lg font-bold ">{rows.length} Articles</div>
-      <table {...getTableProps()} className="w-full mb-10">
-        <thead>
-          {headerGroups.map(headerGroup => (
-            <tr
-              key={headerGroup.id}
-              {...headerGroup.getHeaderGroupProps()}
-              className=""
-            >
-              {headerGroup.headers.map(column => (
-                <th
-                  key={column.id}
-                  {...column.getHeaderProps()}
-                  className="text-left font-medium text-custom-grey h-10"
+      {rows.length === 0 && (
+        <div className="w-full text-xl leading-5 text-center mt-10">
+          You have not created any articles 😔
+        </div>
+      )}
+      {rows.length > 0 && (
+        <div>
+          <div className="text-lg font-bold mb-6">{rows.length} Articles</div>
+          <table {...getTableProps()} className="w-full mb-10">
+            <thead>
+              {headerGroups.map(headerGroup => (
+                <tr
+                  key={headerGroup.id}
+                  {...headerGroup.getHeaderGroupProps()}
+                  className=""
                 >
-                  {column.render("Header")}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody key="" {...getTableBodyProps()}>
-          {rows.map((row, id) => {
-            prepareRow(row);
-            return (
-              <tr
-                key={row.id}
-                {...row.getRowProps()}
-                className={customClass(id)}
-              >
-                {row.cells.map(cell => {
-                  return (
-                    <td
-                      key={cell.id}
-                      {...cell.getCellProps()}
-                      className="font-medium"
+                  {headerGroup.headers.map(column => (
+                    <th
+                      key={column.id}
+                      {...column.getHeaderProps()}
+                      className="text-left font-medium text-custom-grey h-10"
                     >
-                      {cell.render("Cell")}
-                    </td>
-                  );
-                })}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+                      {column.render("Header")}
+                    </th>
+                  ))}
+                </tr>
+              ))}
+            </thead>
+            <tbody key="" {...getTableBodyProps()}>
+              {rows.map((row, id) => {
+                prepareRow(row);
+                return (
+                  <tr
+                    key={row.id}
+                    {...row.getRowProps()}
+                    className={customClass(id)}
+                  >
+                    {row.cells.map(cell => {
+                      return (
+                        <td
+                          key={cell.id}
+                          {...cell.getCellProps()}
+                          className="font-medium"
+                        >
+                          {cell.render("Cell")}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 };
