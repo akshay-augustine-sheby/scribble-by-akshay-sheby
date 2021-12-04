@@ -15,7 +15,9 @@ const ArticleForm = ({
   setTitle,
   body,
   setBody,
-  setArticlePage,
+  setCreateArticlePage,
+  editArticlePage,
+  setEditArticlePage,
   handleSave,
   status,
   setStatus,
@@ -94,7 +96,11 @@ const ArticleForm = ({
           </div>
           <Button
             label="Cancel"
-            onClick={() => setArticlePage(false)}
+            onClick={() => {
+              editArticlePage !== undefined
+                ? setEditArticlePage(false)
+                : setCreateArticlePage(false);
+            }}
             style="text"
           />
         </div>

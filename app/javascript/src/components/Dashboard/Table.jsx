@@ -20,10 +20,14 @@ const Table = ({ articles, deleteArticle, editArticle, createArticle }) => {
       },
       {
         Header: "DATE",
-        accessor: "updated_at",
+        accessor: "published_at",
         Cell: props => (
           <div>
-            {moment(props.cell.row.values.updated_at).format("MMMM Do, YYYY")}
+            {props.cell.row.values.published_at
+              ? moment(props.cell.row.values.published_at).format(
+                  "MMMM Do, YYYY"
+                )
+              : "-"}
           </div>
         ),
       },

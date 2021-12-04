@@ -20,7 +20,8 @@ const Dashboard = () => {
   const [articles, setArticles] = useState([]);
   const [filteredArticles, setFilteredArticles] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [articlePage, setArticlePage] = useState(false);
+  const [editArticlePage, setEditArticlePage] = useState(false);
+  const [createArticlePage, setCreateArticlePage] = useState(false);
   const [articleId, setArticleId] = useState("");
   const [articleDetails, setArticleDetails] = useState({});
   const [totalCount, setTotalCount] = useState(0);
@@ -81,8 +82,9 @@ const Dashboard = () => {
     }
   };
 
-  const createArticle = () => {
-    setArticlePage(true);
+  const createArticle = async () => {
+    setCreateArticlePage(true);
+    await getArticlesCount();
   };
 
   const deleteArticle = async id => {
@@ -99,9 +101,10 @@ const Dashboard = () => {
     }
   };
 
-  const editArticle = id => {
+  const editArticle = async id => {
     setArticleId(id);
-    setArticlePage(true);
+    setEditArticlePage(true);
+    await getArticlesCount();
   };
 
   const handleCreateCategory = async categoryName => {
@@ -194,9 +197,10 @@ const Dashboard = () => {
   return (
     <Container>
       <CategoryContext.Provider value={categories}>
-        {articlePage && articleId !== "" && (
+        {editArticlePage && (
           <EditArticle
-            setArticlePage={setArticlePage}
+            setEditArticlePage={setEditArticlePage}
+            editArticlePage={editArticlePage}
             loading={loading}
             setLoading={setLoading}
             fetchArticles={fetchArticles}
@@ -205,16 +209,16 @@ const Dashboard = () => {
             articleDetails={articleDetails}
           />
         )}
-        {articlePage && articleId === "" && (
+        {createArticlePage && (
           <CreateArticle
-            setArticlePage={setArticlePage}
+            setCreateArticlePage={setCreateArticlePage}
             loading={loading}
             setLoading={setLoading}
             fetchArticles={fetchArticles}
             getArticlesCount={getArticlesCount}
           />
         )}
-        {!articlePage && (
+        {!createArticlePage && !editArticlePage && (
           <div className="flex flex-row">
             <SideBar
               categories={categories}

@@ -6,7 +6,8 @@ import articlesApi from "../../apis/articles";
 import Toastr from "../Common/Toastr";
 
 const EditArticle = ({
-  setArticlePage,
+  setEditArticlePage,
+  editArticlePage,
   loading,
   setLoading,
   fetchArticles,
@@ -23,6 +24,9 @@ const EditArticle = ({
     if (articleDetails !== undefined) {
       setTitle(articleDetails.title);
       setBody(articleDetails.body);
+    } else {
+      setTitle("");
+      setBody("");
     }
   }, [articleDetails]);
 
@@ -43,7 +47,9 @@ const EditArticle = ({
           },
         });
         setLoading(false);
-        setArticlePage(false);
+        setTitle("");
+        setBody("");
+        setEditArticlePage(false);
         fetchArticles();
         fetchArticleDetails(articleId);
       } else Toastr.error("Category must exist");
@@ -64,7 +70,8 @@ const EditArticle = ({
         setStatus={setStatus}
         categoryId={categoryId}
         setCategoryId={setCategoryId}
-        setArticlePage={setArticlePage}
+        editArticlePage={editArticlePage}
+        setEditArticlePage={setEditArticlePage}
         handleSave={handleSave}
         loading={loading}
         setLoading={setLoading}

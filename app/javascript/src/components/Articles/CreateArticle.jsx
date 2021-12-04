@@ -5,7 +5,7 @@ import ArticleForm from "./ArticleForm";
 import articlesApi from "../../apis/articles";
 
 const CreateArticle = ({
-  setArticlePage,
+  setCreateArticlePage,
   loading,
   setLoading,
   fetchArticles,
@@ -29,7 +29,9 @@ const CreateArticle = ({
         },
       });
       setLoading(false);
-      setArticlePage(false);
+      setTitle("");
+      setBody("");
+      setCreateArticlePage(false);
       fetchArticles();
       getArticlesCount();
     } catch (error) {
@@ -49,7 +51,7 @@ const CreateArticle = ({
         setStatus={setStatus}
         categoryId={categoryId}
         setCategoryId={setCategoryId}
-        setArticlePage={setArticlePage}
+        setCreateArticlePage={setCreateArticlePage}
         handleSave={handleSave}
         loading={loading}
         setLoading={setLoading}
