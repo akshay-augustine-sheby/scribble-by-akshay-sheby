@@ -1,7 +1,5 @@
 import React, { useState, useEffect, createContext } from "react";
 
-import { isNil, isEmpty, either } from "ramda";
-
 import Container from "components/Container";
 import PageLoader from "components/PageLoader";
 
@@ -31,6 +29,7 @@ const Dashboard = () => {
 
   const fetchArticles = async () => {
     try {
+      setLoading(true);
       const response = await articlesApi.list();
       setArticles(response.data.articles);
       setLoading(false);
@@ -43,6 +42,7 @@ const Dashboard = () => {
 
   const getArticlesCount = async () => {
     try {
+      setLoading(true);
       const response = await articlesApi.getCount();
       setTotalCount(response.data.total_count);
       setDraftCount(response.data.draft_count);
@@ -82,9 +82,8 @@ const Dashboard = () => {
     }
   };
 
-  const createArticle = async () => {
+  const createArticle = () => {
     setCreateArticlePage(true);
-    await getArticlesCount();
   };
 
   const deleteArticle = async id => {
@@ -101,10 +100,9 @@ const Dashboard = () => {
     }
   };
 
-  const editArticle = async id => {
+  const editArticle = id => {
     setArticleId(id);
     setEditArticlePage(true);
-    await getArticlesCount();
   };
 
   const handleCreateCategory = async categoryName => {
@@ -115,10 +113,10 @@ const Dashboard = () => {
           name: categoryName,
         },
       });
+      await fetchArticles();
+      await fetchCategories();
+      await getArticlesCount();
       setLoading(false);
-      fetchArticles();
-      fetchCategories();
-      getArticlesCount();
     } catch (error) {
       logger.error(error);
       setLoading(false);
@@ -170,28 +168,6 @@ const Dashboard = () => {
         <PageLoader />
       </div>
     );
-  } else if (either(isNil, isEmpty)(filteredArticles, categories)) {
-    return (
-      <Container>
-        <div className="flex flex-row space-x-5">
-          <SideBar
-            categories={categories}
-            handleAllArticles={handleAllArticles}
-            handleDraftArticles={handleDraftArticles}
-            handlePublishedArticles={handlePublishedArticles}
-            handleCategories={handleCategories}
-            totalCount={totalCount}
-            draftCount={draftCount}
-            publishedCount={publishedCount}
-            categoryArticlesCount={categoryArticlesCount}
-            handleCreateCategory={handleCreateCategory}
-          />
-          <div className="w-full text-xl leading-5 text-center mt-10">
-            You have not created any articles 😔
-          </div>
-        </div>
-      </Container>
-    );
   }
 
   return (
@@ -204,6 +180,7 @@ const Dashboard = () => {
             loading={loading}
             setLoading={setLoading}
             fetchArticles={fetchArticles}
+            getArticlesCount={getArticlesCount}
             fetchArticleDetails={fetchArticleDetails}
             articleId={articleId}
             articleDetails={articleDetails}

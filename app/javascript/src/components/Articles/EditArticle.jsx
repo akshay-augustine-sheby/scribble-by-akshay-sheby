@@ -14,6 +14,7 @@ const EditArticle = ({
   fetchArticleDetails,
   articleId,
   articleDetails,
+  getArticlesCount,
 }) => {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
@@ -46,12 +47,11 @@ const EditArticle = ({
             },
           },
         });
-        setLoading(false);
-        setTitle("");
-        setBody("");
         setEditArticlePage(false);
-        fetchArticles();
-        fetchArticleDetails(articleId);
+        await fetchArticles();
+        await fetchArticleDetails(articleId);
+        await getArticlesCount();
+        setLoading(false);
       } else Toastr.error("Category must exist");
     } catch (error) {
       logger.error(error);

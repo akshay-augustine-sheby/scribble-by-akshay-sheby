@@ -28,12 +28,10 @@ const CreateArticle = ({
           category_id: categoryId.value,
         },
       });
-      setLoading(false);
-      setTitle("");
-      setBody("");
       setCreateArticlePage(false);
-      fetchArticles();
-      getArticlesCount();
+      await fetchArticles();
+      await getArticlesCount();
+      setLoading(false);
     } catch (error) {
       logger.error(error);
       setLoading(false);
