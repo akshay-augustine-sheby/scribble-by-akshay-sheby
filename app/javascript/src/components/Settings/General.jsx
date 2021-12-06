@@ -2,19 +2,40 @@ import React, { useState } from "react";
 
 import { Input, Checkbox, Button } from "@bigbinary/neetoui/v2";
 
+import settingsApi from "../../apis/settings";
+
 const General = () => {
   const [siteName, setSiteName] = useState("");
   const [addPassword, setAddPassword] = useState(false);
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleAddPassword = () => {
     addPassword ? setAddPassword(false) : setAddPassword(true);
   };
 
+  const handleSubmit = async event => {
+    event.preventDefault();
+    try {
+      setLoading(true);
+      await settingsApi.updateSiteData({
+        setting: {
+          site_name: siteName,
+          password,
+          protection_status: addPassword === false ? 0 : 1,
+        },
+      });
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      logger.error(error);
+    }
+  };
+
   return (
     <div className="flex justify-center align-middle px-32">
       <form
-        onSubmit={() => {}}
+        onSubmit={handleSubmit}
         className="flex flex-col space-y-5 py-10 px-64 w-full align-middle"
       >
         <div>
@@ -68,7 +89,7 @@ const General = () => {
             label="Save Changes"
             style="primary"
             type="submit"
-            loading={false}
+            loading={loading}
           />
           <Button label="Cancel" onClick={() => {}} style="text" />
         </div>
