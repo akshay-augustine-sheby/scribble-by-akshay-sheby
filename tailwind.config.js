@@ -17,6 +17,7 @@ module.exports = {
         "bb-yellow": "#F6B100",
         "nitro-gray-800": "#1F2937",
         "custom-grey": "#87929D",
+        "custom-grey-bright": "#68737D",
         "custom-indigo": "#6366F1",
         "custom-row-color": "#F8F9F9"
       },

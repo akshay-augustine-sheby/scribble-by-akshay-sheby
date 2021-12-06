@@ -14,7 +14,7 @@ const NavBar = () => {
             <div className="hidden lg:flex">
               <NavItem name="Scribble" path="/" />
               <NavItem name="Articles" path="/" />
-              <NavItem name="Settings" path="/" />
+              <NavItem name="Settings" path="/settings" />
             </div>
           </div>
           <div className="flex items-center justify-end">
