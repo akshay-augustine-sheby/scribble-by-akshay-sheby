@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Input, Checkbox, Button } from "@bigbinary/neetoui/v2";
 
@@ -31,6 +31,28 @@ const General = () => {
       logger.error(error);
     }
   };
+
+  const fetchSiteData = async () => {
+    try {
+      setLoading(true);
+      const response = await settingsApi.fetchSiteData();
+      setSiteName(response.data.setting.site_name);
+      setAddPassword(
+        response.data.setting.protection_status === "password_absent"
+          ? false
+          : true
+      );
+      setLoading(false);
+    } catch (error) {
+      logger.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSiteData();
+  }, []);
 
   return (
     <div className="flex justify-center align-middle px-32">
@@ -91,7 +113,15 @@ const General = () => {
             type="submit"
             loading={loading}
           />
-          <Button label="Cancel" onClick={() => {}} style="text" />
+          <Button
+            label="Cancel"
+            onClick={() => {
+              setSiteName("");
+              setPassword("");
+              setAddPassword(false);
+            }}
+            style="text"
+          />
         </div>
       </form>
     </div>
