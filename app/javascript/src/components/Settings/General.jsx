@@ -116,9 +116,7 @@ const General = () => {
           <Button
             label="Cancel"
             onClick={() => {
-              setSiteName("");
-              setPassword("");
-              setAddPassword(false);
+              fetchSiteData();
             }}
             style="text"
           />
