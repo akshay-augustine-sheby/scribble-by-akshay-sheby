@@ -9,6 +9,9 @@ const General = () => {
   const [addPassword, setAddPassword] = useState(false);
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [disabled, setDisabled] = useState(false);
+  const regex = /(?=.*[a-zA-Z])(?=.*[0-9])/;
 
   const handleAddPassword = () => {
     addPassword ? setAddPassword(false) : setAddPassword(true);
@@ -53,6 +56,21 @@ const General = () => {
   useEffect(() => {
     fetchSiteData();
   }, []);
+
+  useEffect(() => {
+    let message = "";
+    if (password.length < 6) message += "Have at least 6 characters ";
+
+    if (!regex.test(password)) {
+      message += "Include at least 1 letter and 1 number";
+    }
+    setErrorMessage(message);
+  }, [password]);
+
+  useEffect(() => {
+    if (errorMessage !== "" && addPassword) setDisabled(true);
+    else setDisabled(false);
+  }, [errorMessage, addPassword]);
 
   return (
     <div className="flex justify-center align-middle px-32">
@@ -100,6 +118,7 @@ const General = () => {
               size="small"
               type="password"
               value={password}
+              error={errorMessage}
               onChange={e => setPassword(e.target.value)}
               className="w-2/3"
               required
@@ -112,6 +131,7 @@ const General = () => {
             style="primary"
             type="submit"
             loading={loading}
+            disabled={disabled}
           />
           <Button
             label="Cancel"

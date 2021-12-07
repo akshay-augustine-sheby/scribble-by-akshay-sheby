@@ -4,7 +4,7 @@ require "test_helper"
 
 class SettingTest < ActiveSupport::TestCase
   def setup
-    @setting = Setting.new(site_name: "Sample Site", password: "welcome123", protection_status: 0)
+    @setting = Setting.new(site_name: "Sample Site", password: "welcome123", protection_status: 1)
   end
 
   def test_site_name_should_be_present
