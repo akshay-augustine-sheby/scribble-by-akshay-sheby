@@ -12,9 +12,14 @@ const NavBar = () => {
         <div className="flex justify-between h-16">
           <div className="flex px-2 lg:px-0">
             <div className="hidden lg:flex">
-              <NavItem name="Scribble" path="/" />
+              <div
+                className="px-1 pt-1 mr-3
+      font-semibold text-sm leading-5 self-center"
+              >
+                Scribble
+              </div>
               <NavItem name="Articles" path="/" />
-              <NavItem name="Settings" path="/" />
+              <NavItem name="Settings" path="/settings" />
             </div>
           </div>
           <div className="flex items-center justify-end">

@@ -92,17 +92,15 @@ const Table = ({ articles, deleteArticle, editArticle, createArticle }) => {
   return (
     <div className="flex flex-col space-y-6 mt-2">
       <div className="flex flex-row space-x-3 place-items-center justify-end">
-        {rows.length > 0 && (
-          <div className="w-1/3">
-            <Input
-              label=""
-              size="small"
-              onChange={e => setFilter("title", e.target.value)}
-              placeholder="Search article title"
-              prefix={<Search size={16} />}
-            />
-          </div>
-        )}
+        <div className="w-1/3">
+          <Input
+            label=""
+            size="small"
+            onChange={e => setFilter("title", e.target.value)}
+            placeholder="Search article title"
+            prefix={<Search size={16} />}
+          />
+        </div>
         {rows.length > 0 && (
           <Dropdown
             buttonStyle="secondary"
@@ -142,7 +140,7 @@ const Table = ({ articles, deleteArticle, editArticle, createArticle }) => {
       </div>
       {rows.length === 0 && (
         <div className="w-full text-xl leading-5 text-center mt-10">
-          You have not created any articles 😔
+          No matching articles found 😔
         </div>
       )}
       {rows.length > 0 && (

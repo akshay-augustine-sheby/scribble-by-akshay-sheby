@@ -21,7 +21,7 @@ const SideBar = ({
   const [searchValue, setSearchValue] = useState("");
   const [addNewValue, setAddNewValue] = useState("");
   const [activeCategoryId, setActiveCategoryId] = useState("");
-  const [allActive, setAllActive] = useState(false);
+  const [allActive, setAllActive] = useState(true);
   const [draftActive, setDraftActive] = useState(false);
   const [publishedActive, setPublishedActive] = useState(false);
 
@@ -130,9 +130,6 @@ const SideBar = ({
                   onClick={() => {
                     handleCategories(category.id);
                     setActiveCategoryId(category.id);
-                    setAllActive(false);
-                    setPublishedActive(false);
-                    setDraftActive(false);
                   }}
                   active={category.id === activeCategoryId}
                 />
