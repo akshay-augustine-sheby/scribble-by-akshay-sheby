@@ -137,6 +137,7 @@ const General = () => {
             label="Cancel"
             onClick={() => {
               fetchSiteData();
+              setPassword("");
             }}
             style="text"
           />
