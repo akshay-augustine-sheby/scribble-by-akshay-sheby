@@ -142,7 +142,7 @@ const Table = ({ articles, deleteArticle, editArticle, createArticle }) => {
       </div>
       {rows.length === 0 && (
         <div className="w-full text-xl leading-5 text-center mt-10">
-          You have not created any articles 😔
+          No matching articles found in the given category 😔
         </div>
       )}
       {rows.length > 0 && (

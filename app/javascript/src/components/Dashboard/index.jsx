@@ -17,6 +17,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [articles, setArticles] = useState([]);
   const [filteredArticles, setFilteredArticles] = useState([]);
+  const [categoryFilteredArticles, setCategoryFilteredArticles] = useState([]);
   const [categories, setCategories] = useState([]);
   const [editArticlePage, setEditArticlePage] = useState(false);
   const [createArticlePage, setCreateArticlePage] = useState(false);
@@ -26,6 +27,7 @@ const Dashboard = () => {
   const [draftCount, setDraftCount] = useState(0);
   const [publishedCount, setPublishedCount] = useState(0);
   const [categoryArticlesCount, setCategoryArticlesCount] = useState(0);
+  const [categoryActive, setCategoryActive] = useState(false);
 
   const fetchArticles = async () => {
     try {
@@ -124,10 +126,14 @@ const Dashboard = () => {
   };
 
   const handleAllArticles = () => {
+    setCategoryActive(false);
+    setCategoryFilteredArticles([]);
     setFilteredArticles([...articles]);
   };
 
   const handleDraftArticles = () => {
+    setCategoryActive(false);
+    setCategoryFilteredArticles([]);
     const articlesNew = articles.filter(article => {
       return article.status === "draft";
     });
@@ -135,6 +141,8 @@ const Dashboard = () => {
   };
 
   const handlePublishedArticles = () => {
+    setCategoryActive(false);
+    setCategoryFilteredArticles([]);
     const articlesNew = articles.filter(article => {
       return article.status === "published";
     });
@@ -142,10 +150,11 @@ const Dashboard = () => {
   };
 
   const handleCategories = categoryId => {
-    const articlesNew = articles.filter(article => {
+    setCategoryActive(true);
+    const articlesNew = filteredArticles.filter(article => {
       return article.category_id === categoryId;
     });
-    setFilteredArticles([...articlesNew]);
+    setCategoryFilteredArticles([...articlesNew]);
   };
 
   useEffect(() => {
@@ -211,7 +220,11 @@ const Dashboard = () => {
             />
             <div className="w-full p-5">
               <Table
-                articles={[...filteredArticles]}
+                articles={
+                  categoryActive === true
+                    ? [...categoryFilteredArticles]
+                    : [...filteredArticles]
+                }
                 deleteArticle={deleteArticle}
                 editArticle={editArticle}
                 createArticle={createArticle}
