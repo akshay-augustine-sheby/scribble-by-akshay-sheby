@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   Settings as SettingsIcon,
@@ -7,14 +7,45 @@ import {
 } from "@bigbinary/neeto-icons";
 import { MenuBar } from "@bigbinary/neetoui/v2/layouts";
 
-import General from "./General";
+import PageLoader from "components/PageLoader";
 
+import General from "./General";
+import ManageCategories from "./ManageCategories";
+
+import categoriesApi from "../../apis/categories";
 import Container from "../Container";
 
 const Settings = () => {
   const [generalActive, setGeneralActive] = useState(true);
   const [redirectionsActive, setRedirectionsActive] = useState(false);
-  const [manageActive, setManageActive] = useState(false);
+  const [manageCategoriesActive, setManageCategoriesActive] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchCategories = async () => {
+    try {
+      setLoading(true);
+      const response = await categoriesApi.list();
+      setCategories(response.data.categories);
+      setLoading(false);
+    } catch (error) {
+      logger.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="w-screen h-screen">
+        <PageLoader />
+      </div>
+    );
+  }
 
   return (
     <Container>
@@ -29,7 +60,7 @@ const Settings = () => {
                 onClick={() => {
                   setGeneralActive(true);
                   setRedirectionsActive(false);
-                  setManageActive(false);
+                  setManageCategoriesActive(false);
                 }}
                 active={generalActive}
               />
@@ -42,7 +73,7 @@ const Settings = () => {
                 onClick={() => {
                   setGeneralActive(false);
                   setRedirectionsActive(true);
-                  setManageActive(false);
+                  setManageCategoriesActive(false);
                 }}
                 active={redirectionsActive}
               />
@@ -55,14 +86,15 @@ const Settings = () => {
                 onClick={() => {
                   setGeneralActive(false);
                   setRedirectionsActive(false);
-                  setManageActive(true);
+                  setManageCategoriesActive(true);
                 }}
-                active={manageActive}
+                active={manageCategoriesActive}
               />
             </div>
           </MenuBar>
         </div>
         {generalActive && <General />}
+        {manageCategoriesActive && <ManageCategories categories={categories} />}
       </div>
     </Container>
   );

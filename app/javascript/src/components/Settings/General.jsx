@@ -2,13 +2,15 @@ import React, { useEffect, useState } from "react";
 
 import { Input, Checkbox, Button } from "@bigbinary/neetoui/v2";
 
+import PageLoader from "components/PageLoader";
+
 import settingsApi from "../../apis/settings";
 
 const General = () => {
   const [siteName, setSiteName] = useState("");
   const [addPassword, setAddPassword] = useState(false);
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [disabled, setDisabled] = useState(false);
   const regex = /(?=.*[a-zA-Z])(?=.*[0-9])/;
@@ -71,6 +73,14 @@ const General = () => {
     if (errorMessage !== "" && addPassword) setDisabled(true);
     else setDisabled(false);
   }, [errorMessage, addPassword]);
+
+  if (loading) {
+    return (
+      <div className="w-screen h-screen">
+        <PageLoader />
+      </div>
+    );
+  }
 
   return (
     <div className="flex justify-center align-middle px-32">
