@@ -38,7 +38,11 @@ const Table = ({ articles, deleteArticle, editArticle, createArticle }) => {
       {
         Header: "CATEGORY",
         accessor: "name",
-        Cell: props => <div>{props.cell.row.values.name}</div>,
+        Cell: props => (
+          <div>
+            {props.cell.row.values.name ? props.cell.row.values.name : "-"}
+          </div>
+        ),
       },
       {
         Header: "STATUS",
