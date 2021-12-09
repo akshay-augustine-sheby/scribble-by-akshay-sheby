@@ -5,12 +5,21 @@ import { Button } from "@bigbinary/neetoui/v2";
 import DragMove2LineIcon from "remixicon-react/DragMove2LineIcon";
 import Sortable from "sortablejs";
 
+import categoriesApi from "../../apis/categories";
+
 const ManageCategories = ({ categories }) => {
   useEffect(() => {
     const el = document.getElementById("categoryList");
     Sortable.create(el, {
-      onEnd: evt => {
-        logger.info(evt);
+      onEnd: event => {
+        categoriesApi.updatePosition({
+          position: event.oldIndex + 1,
+          payload: {
+            category: {
+              position: event.newIndex + 1,
+            },
+          },
+        });
       },
     });
   }, []);

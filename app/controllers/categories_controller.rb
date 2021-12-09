@@ -2,7 +2,7 @@
 
 class CategoriesController < ApplicationController
   def index
-    categories = Category.all.as_json()
+    categories = Category.all.order(:position).as_json()
     render status: :ok, json: { categories: categories }
   end
 
@@ -17,9 +17,19 @@ class CategoriesController < ApplicationController
     end
   end
 
+  def update_position
+    category = Category.find_by(position: params[:position])
+    if category.update(category_params)
+      render status: :ok, json: {}
+    else
+      errors = category.errors.full_messages.to_sentence
+      render status: :unprocessable_entity, json: { error: errors }
+    end
+  end
+
   private
 
     def category_params
-      params.require(:category).permit(:name)
+      params.require(:category).permit(:name, :position)
     end
 end
