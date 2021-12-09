@@ -1,13 +1,16 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
-import { Edit, Delete, Plus } from "@bigbinary/neeto-icons";
-import { Button } from "@bigbinary/neetoui/v2";
+import { Edit, Delete, Plus, Check } from "@bigbinary/neeto-icons";
+import { Button, Input } from "@bigbinary/neetoui/v2";
 import DragMove2LineIcon from "remixicon-react/DragMove2LineIcon";
 import Sortable from "sortablejs";
 
 import categoriesApi from "../../apis/categories";
 
-const ManageCategories = ({ categories }) => {
+const ManageCategories = ({ categories, handleCreateCategory }) => {
+  const [isAddNewActive, setIsAddNewActive] = useState(false);
+  const [addNewValue, setAddNewValue] = useState("");
+
   useEffect(() => {
     const el = document.getElementById("categoryList");
     Sortable.create(el, {
@@ -33,15 +36,34 @@ const ManageCategories = ({ categories }) => {
         </div>
       </div>
       <div className="flex flex-col space-y-5">
-        <div>
-          <Button
-            label="Add new category"
-            onClick={function noRefCheck() {}}
-            style="link"
-            iconPosition="left"
-            icon={Plus}
-          />
-        </div>
+        {!isAddNewActive && (
+          <div>
+            <Button
+              label="Add new category"
+              onClick={() => setIsAddNewActive(true)}
+              style="link"
+              iconPosition="left"
+              icon={Plus}
+            />
+          </div>
+        )}
+        {isAddNewActive && (
+          <div className="flex flex-row space-x-1 w-1/2">
+            <Input
+              label=""
+              size="small"
+              value={addNewValue}
+              onChange={e => setAddNewValue(e.target.value)}
+              placeholder="Add new category"
+            />
+            <Button
+              onClick={() => handleCreateCategory(addNewValue)}
+              size="large"
+              style="text"
+              icon={Check}
+            />
+          </div>
+        )}
         <div>
           <div
             id="categoryList"

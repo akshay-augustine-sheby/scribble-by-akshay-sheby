@@ -35,6 +35,22 @@ const Settings = () => {
     }
   };
 
+  const handleCreateCategory = async categoryName => {
+    try {
+      setLoading(true);
+      await categoriesApi.create({
+        category: {
+          name: categoryName,
+        },
+      });
+      await fetchCategories();
+      setLoading(false);
+    } catch (error) {
+      logger.error(error);
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchCategories();
   }, []);
@@ -94,7 +110,12 @@ const Settings = () => {
           </MenuBar>
         </div>
         {generalActive && <General />}
-        {manageCategoriesActive && <ManageCategories categories={categories} />}
+        {manageCategoriesActive && (
+          <ManageCategories
+            categories={categories}
+            handleCreateCategory={handleCreateCategory}
+          />
+        )}
       </div>
     </Container>
   );
