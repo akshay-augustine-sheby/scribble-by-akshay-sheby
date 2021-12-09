@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 
+import { Check, Close } from "@bigbinary/neeto-icons";
 import { Input, Checkbox, Button } from "@bigbinary/neetoui/v2";
 
 import PageLoader from "components/PageLoader";
@@ -11,8 +12,9 @@ const General = () => {
   const [addPassword, setAddPassword] = useState(false);
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState("");
   const [disabled, setDisabled] = useState(false);
+  const [isPasswordLengthValid, setIsPasswordLengthValid] = useState(false);
+  const [isRegexMatched, setIsRegexMatched] = useState(false);
   const regex = /(?=.*[a-zA-Z])(?=.*[0-9])/;
 
   const handleAddPassword = () => {
@@ -60,19 +62,18 @@ const General = () => {
   }, []);
 
   useEffect(() => {
-    let message = "";
-    if (password.length < 6) message += "Have at least 6 characters ";
+    if (password.length >= 6) setIsPasswordLengthValid(true);
+    else setIsPasswordLengthValid(false);
 
-    if (!regex.test(password)) {
-      message += "Include at least 1 letter and 1 number";
-    }
-    setErrorMessage(message);
+    if (regex.test(password)) setIsRegexMatched(true);
+    else setIsRegexMatched(false);
   }, [password]);
 
   useEffect(() => {
-    if (errorMessage !== "" && addPassword) setDisabled(true);
-    else setDisabled(false);
-  }, [errorMessage, addPassword]);
+    if ((!isPasswordLengthValid || !isRegexMatched) && addPassword) {
+      setDisabled(true);
+    } else setDisabled(false);
+  }, [isPasswordLengthValid, isRegexMatched, addPassword]);
 
   if (loading) {
     return (
@@ -121,18 +122,45 @@ const General = () => {
           />
         </div>
         {addPassword && (
-          <div>
-            <Input
-              label="Password"
-              placeholder="***********"
-              size="small"
-              type="password"
-              value={password}
-              error={errorMessage}
-              onChange={e => setPassword(e.target.value)}
-              className="w-2/3"
-              required
-            />
+          <div className="flex flex-col space-y-2">
+            <div>
+              <Input
+                label="Password"
+                placeholder="***********"
+                size="small"
+                type="password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                className="w-2/3"
+                required
+              />
+            </div>
+            <div className="flex flex-row items-center text-xs space-x-1">
+              {isPasswordLengthValid && (
+                <div>
+                  <Check color="green" size={15} />
+                </div>
+              )}
+              {!isPasswordLengthValid && (
+                <div>
+                  <Close color="red" size={15} />
+                </div>
+              )}
+              <div>Have at least 6 characters</div>
+            </div>
+            <div className="flex flex-row items-center text-xs space-x-1">
+              {isRegexMatched && (
+                <div>
+                  <Check color="green" size={15} />
+                </div>
+              )}
+              {!isRegexMatched && (
+                <div>
+                  <Close color="red" size={15} />
+                </div>
+              )}
+              <div>Include at least 1 letter and 1 number</div>
+            </div>
           </div>
         )}
         <div className="flex flex-row space-x-2">
