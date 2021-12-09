@@ -1,7 +1,6 @@
 import React, { useMemo } from "react";
 
-import { Edit, Delete } from "@bigbinary/neeto-icons";
-import { Search, Plus } from "@bigbinary/neeto-icons";
+import { Edit, Delete, Search, Plus } from "@bigbinary/neeto-icons";
 import { Button, Dropdown, Checkbox, Input } from "@bigbinary/neetoui/v2";
 import moment from "moment-timezone";
 import { useFilters, useTable } from "react-table";
@@ -39,7 +38,11 @@ const Table = ({ articles, deleteArticle, editArticle, createArticle }) => {
       {
         Header: "CATEGORY",
         accessor: "name",
-        Cell: props => <div>{props.cell.row.values.name}</div>,
+        Cell: props => (
+          <div>
+            {props.cell.row.values.name ? props.cell.row.values.name : "-"}
+          </div>
+        ),
       },
       {
         Header: "STATUS",

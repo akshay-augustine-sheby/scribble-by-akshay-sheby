@@ -158,9 +158,11 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
+    setLoading(true);
     fetchArticles();
     fetchCategories();
     getArticlesCount();
+    setLoading(false);
   }, []);
 
   useEffect(() => {
