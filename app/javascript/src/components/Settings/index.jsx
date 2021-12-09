@@ -51,6 +51,19 @@ const Settings = () => {
     }
   };
 
+  const deleteCategory = async id => {
+    try {
+      if (window.confirm("Are you sure you wish to delete this item?")) {
+        setLoading(true);
+        await categoriesApi.destroy(id);
+        await fetchCategories();
+        setLoading(false);
+      }
+    } catch (error) {
+      logger.error(error);
+    }
+  };
+
   useEffect(() => {
     fetchCategories();
   }, []);
@@ -114,6 +127,7 @@ const Settings = () => {
           <ManageCategories
             categories={categories}
             handleCreateCategory={handleCreateCategory}
+            deleteCategory={deleteCategory}
           />
         )}
       </div>

@@ -7,7 +7,11 @@ import Sortable from "sortablejs";
 
 import categoriesApi from "../../apis/categories";
 
-const ManageCategories = ({ categories, handleCreateCategory }) => {
+const ManageCategories = ({
+  categories,
+  handleCreateCategory,
+  deleteCategory,
+}) => {
   const [isAddNewActive, setIsAddNewActive] = useState(false);
   const [addNewValue, setAddNewValue] = useState("");
 
@@ -79,7 +83,7 @@ const ManageCategories = ({ categories, handleCreateCategory }) => {
                   </div>
                   <div className="flex flex-row space-x-2">
                     <Button
-                      onClick={() => {}}
+                      onClick={() => deleteCategory(category.id)}
                       style="secondary"
                       iconPosition="left"
                       icon={Delete}
