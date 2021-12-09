@@ -21,6 +21,7 @@ const Settings = () => {
   const [manageCategoriesActive, setManageCategoriesActive] = useState(false);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [categoryName, setCategoryName] = useState("");
 
   const fetchCategories = async () => {
     try {
@@ -51,7 +52,7 @@ const Settings = () => {
     }
   };
 
-  const deleteCategory = async id => {
+  const handleDeleteCategory = async id => {
     try {
       if (window.confirm("Are you sure you wish to delete this item?")) {
         setLoading(true);
@@ -61,6 +62,25 @@ const Settings = () => {
       }
     } catch (error) {
       logger.error(error);
+    }
+  };
+
+  const handleEditCategory = async categoryId => {
+    try {
+      setLoading(true);
+      await categoriesApi.update({
+        categoryId,
+        payload: {
+          category: {
+            name: categoryName,
+          },
+        },
+      });
+      await fetchCategories();
+      setLoading(false);
+    } catch (error) {
+      logger.error(error);
+      setLoading(false);
     }
   };
 
@@ -127,7 +147,10 @@ const Settings = () => {
           <ManageCategories
             categories={categories}
             handleCreateCategory={handleCreateCategory}
-            deleteCategory={deleteCategory}
+            handleEditCategory={handleEditCategory}
+            handleDeleteCategory={handleDeleteCategory}
+            categoryName={categoryName}
+            setCategoryName={setCategoryName}
           />
         )}
       </div>

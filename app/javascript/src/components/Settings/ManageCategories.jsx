@@ -10,9 +10,14 @@ import categoriesApi from "../../apis/categories";
 const ManageCategories = ({
   categories,
   handleCreateCategory,
-  deleteCategory,
+  handleEditCategory,
+  handleDeleteCategory,
+  categoryName,
+  setCategoryName,
 }) => {
   const [isAddNewActive, setIsAddNewActive] = useState(false);
+  const [isEditActive, setIsEditActive] = useState(false);
+  const [editCategoryId, setEditCategoryId] = useState("");
   const [addNewValue, setAddNewValue] = useState("");
 
   useEffect(() => {
@@ -44,7 +49,9 @@ const ManageCategories = ({
           <div>
             <Button
               label="Add new category"
-              onClick={() => setIsAddNewActive(true)}
+              onClick={() => {
+                setIsAddNewActive(true);
+              }}
               style="link"
               iconPosition="left"
               icon={Plus}
@@ -79,17 +86,41 @@ const ManageCategories = ({
                 <div className="flex flex-row justify-between place-items-center">
                   <div className="flex flex-row space-x-2 place-items-center">
                     <DragMove2LineIcon color="gray" size={16} />
-                    <div>{category.name}</div>
+                    {editCategoryId !== category.id && (
+                      <div>{category.name}</div>
+                    )}
+                    {isEditActive && editCategoryId === category.id && (
+                      <div className="flex flex-row space-x-1">
+                        <Input
+                          label=""
+                          size="small"
+                          value={categoryName}
+                          onChange={e => setCategoryName(e.target.value)}
+                        />
+                        <Button
+                          onClick={() => handleEditCategory(category.id)}
+                          size="large"
+                          style="text"
+                          icon={Check}
+                        />
+                      </div>
+                    )}
                   </div>
                   <div className="flex flex-row space-x-2">
                     <Button
-                      onClick={() => deleteCategory(category.id)}
+                      onClick={() => {
+                        handleDeleteCategory(category.id);
+                      }}
                       style="secondary"
                       iconPosition="left"
                       icon={Delete}
                     />
                     <Button
-                      onClick={() => {}}
+                      onClick={() => {
+                        setIsEditActive(true);
+                        setEditCategoryId(category.id);
+                        setCategoryName(category.name);
+                      }}
                       style="secondary"
                       iconPosition="left"
                       icon={Edit}

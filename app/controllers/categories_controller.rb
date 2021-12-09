@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class CategoriesController < ApplicationController
-  before_action :load_category, only: %i[destroy]
+  before_action :load_category, only: %i[destroy update]
 
   def index
     categories = Category.all.order(:position).as_json()
@@ -32,6 +32,15 @@ class CategoriesController < ApplicationController
   def destroy
     if @category.destroy
       render status: :ok, json: { notice: t("successfully_deleted", entity: "Category") }
+    else
+      errors = @category.errors.full_messages.to_sentence
+      render status: :unprocessable_entity, json: { error: errors }
+    end
+  end
+
+  def update
+    if @category.update(category_params)
+      render status: :ok, json: { notice: t("successfully_updated", entity: "Category") }
     else
       errors = @category.errors.full_messages.to_sentence
       render status: :unprocessable_entity, json: { error: errors }
