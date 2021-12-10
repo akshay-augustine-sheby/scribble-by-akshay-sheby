@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   get "/get_articles_count" => "articles#get_articles_count"
   put "/update_site_data" => "settings#update_site_data"
   get "/get_site_data" => "settings#get_site_data"
+  get "/get_authentication_status" => "settings#get_authentication_status"
   put "/update_position/:position" => "categories#update_position"
   get "*path", to: "home#index", via: :all
 end

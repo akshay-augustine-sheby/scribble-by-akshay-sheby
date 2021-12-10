@@ -43,11 +43,9 @@ const General = () => {
     try {
       setLoading(true);
       const response = await settingsApi.fetchSiteData();
-      setSiteName(response.data.setting.site_name);
+      setSiteName(response.data.site_name);
       setAddPassword(
-        response.data.setting.protection_status === "password_absent"
-          ? false
-          : true
+        response.data.protection_status === "password_absent" ? false : true
       );
       setLoading(false);
     } catch (error) {

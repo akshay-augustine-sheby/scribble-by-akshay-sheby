@@ -24,7 +24,7 @@ const NavBar = () => {
           </div>
           <div className="flex items-center justify-end">
             <Button
-              href=""
+              href="/welcome"
               icon={ExternalLink}
               iconPosition="right"
               label="Preview"
