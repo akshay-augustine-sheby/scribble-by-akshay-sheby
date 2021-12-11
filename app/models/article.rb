@@ -30,6 +30,6 @@ class Article < ApplicationRecord
         category_articles_count[article.category_id] += 1
         total_count += 1
       end
-      { total_count: total_count, published_count: published_count, category_articles_count: category_articles_count }
+      [ total_count, published_count, category_articles_count ]
     end
 end

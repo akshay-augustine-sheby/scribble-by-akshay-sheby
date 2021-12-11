@@ -36,7 +36,7 @@ const EuiContainer = ({ children }) => {
 
   return (
     <>
-      <nav className="bg-white shadow">
+      <nav className="bg-white shadow sticky top-0">
         <div className="py-6 font-semibold text-base leading-5 self-center h-16 text-center">
           {siteName}
         </div>

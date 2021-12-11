@@ -12,5 +12,6 @@ Rails.application.routes.draw do
   get "/get_site_data" => "settings#get_site_data"
   get "/get_authentication_status" => "settings#get_authentication_status"
   put "/update_position/:position" => "categories#update_position"
+  get "/get_categories_articles" => "categories#get_categories_articles"
   get "*path", to: "home#index", via: :all
 end

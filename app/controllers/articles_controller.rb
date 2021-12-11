@@ -4,12 +4,12 @@ class ArticlesController < ApplicationController
   before_action :load_article, only: %i[update show destroy]
 
   def get_articles_count
-    count = Article.get_count()
+    total_count, published_count, category_articles_count = Article.get_count()
     render status: :ok, json: {
-      total_count: count[:total_count],
-      draft_count: count[:total_count] - count[:published_count],
-      published_count: count[:published_count],
-      category_articles_count: count[:category_articles_count]
+      total_count: total_count,
+      draft_count: total_count - published_count,
+      published_count: published_count,
+      category_articles_count: category_articles_count
     }
   end
 

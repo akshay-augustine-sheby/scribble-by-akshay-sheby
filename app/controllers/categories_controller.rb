@@ -47,6 +47,11 @@ class CategoriesController < ApplicationController
     end
   end
 
+  def get_categories_articles
+    articles, categories_arr = Category.get_categories_articles_data()
+    render status: :ok, json: { articles: articles, categories: categories_arr }
+  end
+
   private
 
     def category_params
