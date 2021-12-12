@@ -12,7 +12,7 @@ const EditArticle = ({
   setLoading,
   fetchArticles,
   fetchArticleDetails,
-  articleId,
+  slug,
   articleDetails,
   getArticlesCount,
 }) => {
@@ -37,7 +37,7 @@ const EditArticle = ({
       if (categoryId.value !== undefined) {
         setLoading(true);
         await articlesApi.update({
-          articleId,
+          slug,
           payload: {
             article: {
               title: title,
@@ -49,7 +49,7 @@ const EditArticle = ({
         });
         setEditArticlePage(false);
         await fetchArticles();
-        await fetchArticleDetails(articleId);
+        await fetchArticleDetails(slug);
         await getArticlesCount();
         setLoading(false);
       } else Toastr.error("Category must exist");

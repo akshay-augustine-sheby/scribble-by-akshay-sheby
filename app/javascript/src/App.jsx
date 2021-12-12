@@ -11,8 +11,9 @@ import { registerIntercepts, setAuthHeaders } from "./apis/axios";
 import settingsApi from "./apis/settings";
 import CreateArticle from "./components/Articles/CreateArticle";
 import Dashboard from "./components/Dashboard";
+import Welcome from "./components/Eui/ArticleContainer";
 import Authenticate from "./components/Eui/Authenticate";
-import Welcome from "./components/Eui/Welcome";
+import ShowArticle from "./components/Eui/ShowArticle";
 import PageLoader from "./components/PageLoader";
 import Settings from "./components/Settings";
 import { getFromLocalStorage, setToLocalStorage } from "./helpers/storage";
@@ -56,6 +57,7 @@ const App = () => {
       <Switch>
         <Route exact path="/" component={Dashboard} />
         <Route exact path="/articles/create" component={CreateArticle} />
+        <Route exact path="/articles/:slug" component={ShowArticle} />
         <Route exact path="/settings" component={Settings} />
         <Route exact path="/authenticate" component={Authenticate} />
         <PrivateRoute

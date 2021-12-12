@@ -15,7 +15,7 @@ class Category < ApplicationRecord
       articles[category.id] = []
       categories_arr.push({ id: category.id, name: category.name })
       category.articles.each do |article|
-        articles[category.id].push({ id: article.id, title: article.title })
+        articles[category.id].push({ slug: article.slug, title: article.title })
       end
     end
     [ articles, categories_arr ]

@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 
+import PropTypes from "prop-types";
+
 import EuiContainer from "./EuiContainer";
 import SideBar from "./SideBar";
 
 import categoriesApi from "../../apis/categories";
 import PageLoader from "../PageLoader";
 
-const Welcome = () => {
+const ArticleContainer = ({ children }) => {
   const [categories, setCategories] = useState([]);
   const [articles, setArticles] = useState({});
   const [loading, setLoading] = useState(true);
@@ -41,9 +43,14 @@ const Welcome = () => {
     <EuiContainer>
       <div className="flex flex-row">
         <SideBar categories={categories} articles={articles} />
-        <div>Welcome</div>
+        <div>{children}</div>
       </div>
     </EuiContainer>
   );
 };
-export default Welcome;
+
+ArticleContainer.propTypes = {
+  children: PropTypes.node.isRequired,
+};
+
+export default ArticleContainer;

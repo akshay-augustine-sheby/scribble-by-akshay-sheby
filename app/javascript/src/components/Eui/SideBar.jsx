@@ -39,7 +39,10 @@ const SideBar = ({ categories, articles }) => {
               <div className="flex flex-col space-y-2 text-xs ml-8 py-2 text-custom-grey font-semibold">
                 {activeCategories[category.id] === true &&
                   articles[category.id].map(article => (
-                    <NavLink to="/welcome" key={article.id}>
+                    <NavLink
+                      to={`/articles/${article.slug}`}
+                      key={article.slug}
+                    >
                       {article.title}
                     </NavLink>
                   ))}
