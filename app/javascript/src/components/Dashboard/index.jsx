@@ -21,7 +21,7 @@ const Dashboard = () => {
   const [categories, setCategories] = useState([]);
   const [editArticlePage, setEditArticlePage] = useState(false);
   const [createArticlePage, setCreateArticlePage] = useState(false);
-  const [articleId, setArticleId] = useState("");
+  const [slug, setSlug] = useState("");
   const [articleDetails, setArticleDetails] = useState({});
   const [totalCount, setTotalCount] = useState(0);
   const [draftCount, setDraftCount] = useState(0);
@@ -58,10 +58,10 @@ const Dashboard = () => {
     }
   };
 
-  const fetchArticleDetails = async articleId => {
+  const fetchArticleDetails = async slug => {
     try {
       setLoading(true);
-      const response = await articlesApi.show(articleId);
+      const response = await articlesApi.show(slug);
       setArticleDetails(response.data.article);
       setLoading(false);
     } catch (error) {
@@ -88,11 +88,11 @@ const Dashboard = () => {
     setCreateArticlePage(true);
   };
 
-  const deleteArticle = async id => {
+  const deleteArticle = async slug => {
     try {
       if (window.confirm("Are you sure you wish to delete this item?")) {
         setLoading(true);
-        await articlesApi.destroy(id);
+        await articlesApi.destroy(slug);
         await fetchArticles();
         await getArticlesCount();
         setLoading(false);
@@ -102,8 +102,8 @@ const Dashboard = () => {
     }
   };
 
-  const editArticle = id => {
-    setArticleId(id);
+  const editArticle = slug => {
+    setSlug(slug);
     setEditArticlePage(true);
   };
 
@@ -170,8 +170,8 @@ const Dashboard = () => {
   }, [articles]);
 
   useEffect(() => {
-    fetchArticleDetails(articleId);
-  }, [articleId]);
+    fetchArticleDetails(slug);
+  }, [slug]);
 
   if (loading) {
     return (
@@ -193,7 +193,7 @@ const Dashboard = () => {
             fetchArticles={fetchArticles}
             getArticlesCount={getArticlesCount}
             fetchArticleDetails={fetchArticleDetails}
-            articleId={articleId}
+            slug={slug}
             articleDetails={articleDetails}
           />
         )}

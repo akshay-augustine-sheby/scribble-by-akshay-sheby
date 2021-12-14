@@ -47,6 +47,16 @@ class CategoriesController < ApplicationController
     end
   end
 
+  def get_categories_articles
+    articles, categories_arr, initial_category_id, initial_slug = Category.get_categories_articles_data()
+    render status: :ok, json: {
+      articles: articles,
+      categories: categories_arr,
+      initial_category_id: initial_category_id,
+      initial_slug: initial_slug
+    }
+  end
+
   private
 
     def category_params

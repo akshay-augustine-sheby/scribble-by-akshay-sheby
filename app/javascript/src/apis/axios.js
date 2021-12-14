@@ -7,7 +7,6 @@ import { setToLocalStorage, getFromLocalStorage } from "../helpers/storage";
 const DEFAULT_ERROR_NOTIFICATION = "Something went wrong!";
 
 axios.defaults.baseURL = "/";
-
 const setAuthHeaders = (setLoading = () => null) => {
   axios.defaults.headers = {
     Accept: "application/json",
@@ -36,14 +35,14 @@ const handleSuccessResponse = response => {
 
 const handleErrorResponse = axiosErrorObject => {
   if (axiosErrorObject.response?.status === 401) {
-    setToLocalStorage({ authToken: null, email: null, userId: null });
-    setTimeout(() => (window.location.href = "/"), 2000);
+    setToLocalStorage({ authToken: null });
+    setTimeout(() => (window.location.href = "/welcome"), 2000);
   }
   Toastr.error(
     axiosErrorObject.response?.data?.error || DEFAULT_ERROR_NOTIFICATION
   );
   if (axiosErrorObject.response?.status === 423) {
-    window.location.href = "/";
+    window.location.href = "/welcome";
   }
 
   return Promise.reject(axiosErrorObject);

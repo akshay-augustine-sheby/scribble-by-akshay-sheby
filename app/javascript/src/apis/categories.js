@@ -7,6 +7,7 @@ const updatePosition = ({ position, payload }) =>
 const destroy = categoryId => axios.delete(`/categories/${categoryId}`);
 const update = ({ categoryId, payload }) =>
   axios.put(`/categories/${categoryId}`, payload);
+const getCategoriesAndArticles = () => axios.get("/get_categories_articles");
 
 const categoriesApi = {
   list,
@@ -14,5 +15,6 @@ const categoriesApi = {
   updatePosition,
   destroy,
   update,
+  getCategoriesAndArticles,
 };
 export default categoriesApi;

@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class SettingsController < ApplicationController
-  before_action :load_setting, only: %i[update_site_data get_site_data]
+  before_action :load_setting,
+    only: %i[update_site_data get_site_data get_authentication_status authenticate_using_password]
 
   def update_site_data
     if @setting.update(setting_params)
@@ -13,7 +14,23 @@ class SettingsController < ApplicationController
   end
 
   def get_site_data
-    render status: :ok, json: { setting: @setting }
+    render status: :ok, json: { site_name: @setting.site_name, protection_status: @setting.protection_status }
+  end
+
+  def get_authentication_status
+    if @setting.password_absent?
+      render status: :ok, json: { auth_token: @setting.authentication_token }
+    else
+      render status: :ok, json: { auth_token: nil }
+    end
+  end
+
+  def authenticate_using_password
+    if @setting.authenticate(setting_params[:password])
+      render status: :ok, json: { auth_token: @setting.authentication_token }
+    else
+      render status: :unauthorized, json: { error: ("Incorrect Credentials") }
+    end
   end
 
   private

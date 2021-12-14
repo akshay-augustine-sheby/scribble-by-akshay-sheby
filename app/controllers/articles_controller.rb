@@ -4,12 +4,12 @@ class ArticlesController < ApplicationController
   before_action :load_article, only: %i[update show destroy]
 
   def get_articles_count
-    count = Article.get_count()
+    total_count, published_count, category_articles_count = Article.get_count()
     render status: :ok, json: {
-      total_count: count[:total_count],
-      draft_count: count[:total_count] - count[:published_count],
-      published_count: count[:published_count],
-      category_articles_count: count[:category_articles_count]
+      total_count: total_count,
+      draft_count: total_count - published_count,
+      published_count: published_count,
+      category_articles_count: category_articles_count
     }
   end
 
@@ -39,7 +39,8 @@ class ArticlesController < ApplicationController
   end
 
   def show
-    render status: :ok, json: { article: @article }
+    category = Category.find_by(id: @article.category_id)
+    render status: :ok, json: { article: @article, category: category.name }
   end
 
   def destroy
@@ -58,7 +59,7 @@ class ArticlesController < ApplicationController
     end
 
     def load_article
-      @article = Article.find_by(id: params[:id])
+      @article = Article.find_by(slug: params[:slug])
       unless @article
         render status: :not_found, json: { error: t("not_found", entity: "Article") }
       end

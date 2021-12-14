@@ -1,5 +1,13 @@
-const setToLocalStorage = ({ authToken }) => {
-  localStorage.setItem("authToken", JSON.stringify(authToken));
+const setToLocalStorage = ({
+  authToken,
+  activeCategoryId,
+  activeArticleSlug,
+}) => {
+  if (authToken !== undefined) {
+    localStorage.setItem("authToken", JSON.stringify(authToken));
+  }
+  localStorage.setItem("activeCategoryId", JSON.stringify(activeCategoryId));
+  localStorage.setItem("activeArticleSlug", JSON.stringify(activeArticleSlug));
 };
 
 const getFromLocalStorage = key => {

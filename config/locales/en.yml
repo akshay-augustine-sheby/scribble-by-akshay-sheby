@@ -34,3 +34,6 @@ en:
   successfully_updated: "%{entity} was successfully updated!"
   successfully_deleted: "%{entity} was successfully deleted!"
   not_found: "%{entity} not found."
+  article:
+    slug:
+      immutable: "is immutable!"
