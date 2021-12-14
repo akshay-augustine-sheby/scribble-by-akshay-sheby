@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   defaults format: :json do
     resources :articles, except: %i[new edit], param: :slug
     resources :categories, except: %i[new edit show], param: :id
+    resources :redirections, except: %i[new edit show], param: :id
     get "/get_articles_count" => "articles#get_articles_count"
     put "/update_site_data" => "settings#update_site_data"
     get "/get_site_data" => "settings#get_site_data"

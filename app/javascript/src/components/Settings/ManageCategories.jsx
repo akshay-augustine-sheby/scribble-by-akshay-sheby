@@ -111,7 +111,7 @@ const ManageCategories = ({
                       onClick={() => {
                         handleDeleteCategory(category.id);
                       }}
-                      style="secondary"
+                      style="text"
                       iconPosition="left"
                       icon={Delete}
                     />
@@ -121,7 +121,7 @@ const ManageCategories = ({
                         setEditCategoryId(category.id);
                         setCategoryName(category.name);
                       }}
-                      style="secondary"
+                      style="text"
                       iconPosition="left"
                       icon={Edit}
                     />
