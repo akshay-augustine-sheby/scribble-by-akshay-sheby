@@ -5,7 +5,9 @@ import img from "src/images/Authenticate.svg";
 
 import EuiContainer from "./EuiContainer";
 
+import { setAuthHeaders } from "../../apis/axios";
 import settingsApi from "../../apis/settings";
+import { setToLocalStorage } from "../../helpers/storage";
 import PageLoader from "../PageLoader";
 
 const Authenticate = () => {
@@ -13,6 +15,24 @@ const Authenticate = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(true);
   const [disabled, setDisabled] = useState(true);
+
+  const handleSubmit = async event => {
+    event.preventDefault();
+    try {
+      const response = await settingsApi.authenticateUsingPassword({
+        setting: { password },
+      });
+      setToLocalStorage({
+        authToken: response.data.auth_token,
+      });
+      setAuthHeaders();
+      window.location.href = "/welcome";
+      setLoading(false);
+    } catch (error) {
+      logger.error(error);
+      setLoading(false);
+    }
+  };
 
   const fetchSiteData = async () => {
     try {
@@ -48,7 +68,7 @@ const Authenticate = () => {
     <div>
       <EuiContainer>
         <form
-          onSubmit={() => {}}
+          onSubmit={handleSubmit}
           className="flex flex-col py-32 w-full align-middle place-items-center"
         >
           <div className="flex flex-col space-y-5">

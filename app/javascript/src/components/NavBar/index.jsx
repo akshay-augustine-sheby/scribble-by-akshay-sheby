@@ -24,13 +24,11 @@ const NavBar = () => {
           </div>
           <div className="flex items-center justify-end">
             <Button
-              href="/welcome"
               icon={ExternalLink}
               iconPosition="right"
               label="Preview"
-              onClick={function noRefCheck() {}}
+              onClick={() => window.open(`${window.location.origin}/welcome`)}
               style="secondary"
-              to=""
             />
           </div>
         </div>

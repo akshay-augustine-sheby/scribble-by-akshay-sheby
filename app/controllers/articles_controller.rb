@@ -39,7 +39,8 @@ class ArticlesController < ApplicationController
   end
 
   def show
-    render status: :ok, json: { article: @article }
+    category = Category.find_by(id: @article.category_id)
+    render status: :ok, json: { article: @article, category: category.name }
   end
 
   def destroy

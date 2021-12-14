@@ -11,7 +11,6 @@ import { registerIntercepts, setAuthHeaders } from "./apis/axios";
 import settingsApi from "./apis/settings";
 import CreateArticle from "./components/Articles/CreateArticle";
 import Dashboard from "./components/Dashboard";
-import Welcome from "./components/Eui/ArticleContainer";
 import Authenticate from "./components/Eui/Authenticate";
 import ShowArticle from "./components/Eui/ShowArticle";
 import PageLoader from "./components/PageLoader";
@@ -27,7 +26,9 @@ const App = () => {
     try {
       setLoading(true);
       const response = await settingsApi.fetchAuthenticationStatus();
-      setToLocalStorage({ authToken: response.data.auth_token });
+      if (response.data.auth_token !== null) {
+        setToLocalStorage({ authToken: response.data.auth_token });
+      }
       setLoading(false);
     } catch (error) {
       logger.error(error);
@@ -39,8 +40,8 @@ const App = () => {
   useEffect(() => {
     initializeLogger();
     registerIntercepts();
-    setAuthHeaders(setLoading);
     fetchAuthenticationStatus();
+    setAuthHeaders(setLoading);
   }, []);
 
   if (loading) {
@@ -57,14 +58,14 @@ const App = () => {
       <Switch>
         <Route exact path="/" component={Dashboard} />
         <Route exact path="/articles/create" component={CreateArticle} />
-        <Route exact path="/articles/:slug" component={ShowArticle} />
+        <Route exact path="/article/:slug" component={ShowArticle} />
         <Route exact path="/settings" component={Settings} />
         <Route exact path="/authenticate" component={Authenticate} />
         <PrivateRoute
           path="/welcome"
           redirectRoute="/authenticate"
           condition={isLoggedIn}
-          component={Welcome}
+          component={ShowArticle}
         />
       </Switch>
     </Router>

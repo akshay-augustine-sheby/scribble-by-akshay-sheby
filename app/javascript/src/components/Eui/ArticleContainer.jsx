@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 
 import PropTypes from "prop-types";
 
@@ -42,8 +42,12 @@ const ArticleContainer = ({ children }) => {
   return (
     <EuiContainer>
       <div className="flex flex-row">
-        <SideBar categories={categories} articles={articles} />
-        <div>{children}</div>
+        <SideBar
+          categories={categories}
+          articles={articles}
+          className="w-1/5"
+        />
+        <div className="w-4/5 px-10 py-6">{children}</div>
       </div>
     </EuiContainer>
   );
@@ -53,4 +57,4 @@ ArticleContainer.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-export default ArticleContainer;
+export default memo(ArticleContainer);
