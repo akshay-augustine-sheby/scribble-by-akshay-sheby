@@ -14,6 +14,11 @@ Rails.application.routes.draw do
     get "/get_categories_articles" => "categories#get_categories_articles"
   end
 
+  redirections = Redirection.all
+  redirections.each do |redirection|
+    get redirection.from_path, to: redirect(redirection.to_path)
+  end
+
   root "home#index"
   get "*path", to: "home#index", via: :all
 end
