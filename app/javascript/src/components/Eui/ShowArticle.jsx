@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import moment from "moment-timezone";
 import { useParams } from "react-router-dom";
 
+import ErrorBoundary from "./ErrorBoundary";
 import EuiContainer from "./EuiContainer";
 import SideBar from "./SideBar";
 
@@ -19,6 +20,7 @@ const ShowArticle = () => {
   const [categories, setCategories] = useState([]);
   const [articles, setArticles] = useState({});
   const [loading, setLoading] = useState(true);
+  const [showErrorPage, setShowErrorPage] = useState(false);
 
   const fetchCategoriesAndArticles = async () => {
     try {
@@ -51,6 +53,7 @@ const ShowArticle = () => {
       setCategory(response.data.category);
       setLoading(false);
     } catch (error) {
+      setShowErrorPage(true);
       logger.error(error);
     } finally {
       setLoading(false);
@@ -75,6 +78,8 @@ const ShowArticle = () => {
         <PageLoader />
       </div>
     );
+  } else if (showErrorPage) {
+    return <ErrorBoundary />;
   }
 
   return (
@@ -98,7 +103,7 @@ const ShowArticle = () => {
                 </div>
               </div>
             </div>
-            <div>{articleDetails.body}</div>
+            <div className="whitespace-pre-wrap">{articleDetails.body}</div>
           </div>
         </div>
       </div>

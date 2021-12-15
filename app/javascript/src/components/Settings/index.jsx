@@ -11,6 +11,7 @@ import PageLoader from "components/PageLoader";
 
 import General from "./General";
 import ManageCategories from "./ManageCategories";
+import Redirections from "./Redirections";
 
 import categoriesApi from "../../apis/categories";
 import Container from "../Container";
@@ -143,6 +144,7 @@ const Settings = () => {
           </MenuBar>
         </div>
         {generalActive && <General />}
+        {redirectionsActive && <Redirections />}
         {manageCategoriesActive && (
           <ManageCategories
             categories={categories}

@@ -56,13 +56,13 @@ const Table = ({ articles, deleteArticle, editArticle, createArticle }) => {
           <div className="flex flex-row align-middle justify-center space-x-2 px-1 py-2">
             <Button
               onClick={() => deleteArticle(value)}
-              style="secondary"
+              style="text"
               iconPosition="left"
               icon={Delete}
             />
             <Button
               onClick={() => editArticle(value)}
-              style="secondary"
+              style="text"
               iconPosition="left"
               icon={Edit}
             />
