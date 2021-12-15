@@ -31,7 +31,10 @@ def create_sample_data!
   create_article! title: 'Font weights', status: 1, category_id: category4.id
   create_article! title: 'Font sizes', status: 1, category_id: category4.id
   Setting.create!(site_name: 'Spinkart', password: 'welcome123', protection_status: 1)
-  puts 'Done! Now your database contain different categories and its corresponding articles'
+  Redirection.create!(from_path: '/dashboard', to_path: '/')
+  Redirection.create!(from_path: '/home-page', to_path: '/welcome')
+  Redirection.create!(from_path: '/setup', to_path: '/settings')
+  puts 'Done! Now your database contain categories, articles, settings and redirections.'
 end
 
 def create_article!(options = {})
