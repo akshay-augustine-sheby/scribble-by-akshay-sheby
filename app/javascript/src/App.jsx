@@ -17,6 +17,7 @@ import redirectionsApi from "./apis/redirections";
 import settingsApi from "./apis/settings";
 import CreateArticle from "./components/Articles/CreateArticle";
 import Dashboard from "./components/Dashboard";
+import ErrorBoundary from "./components/ErrorBoundary";
 import Authenticate from "./components/Eui/Authenticate";
 import ShowArticle from "./components/Eui/ShowArticle";
 import PageLoader from "./components/PageLoader";
@@ -98,6 +99,7 @@ const App = () => {
           condition={isLoggedIn}
           component={ShowArticle}
         />
+        <Route component={ErrorBoundary} />
       </Switch>
     </Router>
   );

@@ -173,7 +173,7 @@ const Dashboard = () => {
     fetchArticleDetails(slug);
   }, [slug]);
 
-  if (loading) {
+  if (loading || articles.length === 0) {
     return (
       <div className="w-screen h-screen">
         <PageLoader />
