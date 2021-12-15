@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from "react";
 
 import { either, isEmpty, isNil } from "ramda";
-import { Route, Switch, BrowserRouter as Router } from "react-router-dom";
+import {
+  Route,
+  Switch,
+  BrowserRouter as Router,
+  Redirect,
+} from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
 import { initializeLogger } from "common/logger";
 import PrivateRoute from "components/Common/PrivateRoute";
 
 import { registerIntercepts, setAuthHeaders } from "./apis/axios";
+import redirectionsApi from "./apis/redirections";
 import settingsApi from "./apis/settings";
 import CreateArticle from "./components/Articles/CreateArticle";
 import Dashboard from "./components/Dashboard";
@@ -19,6 +25,7 @@ import { getFromLocalStorage, setToLocalStorage } from "./helpers/storage";
 
 const App = () => {
   const [loading, setLoading] = useState(true);
+  const [redirections, setRedirections] = useState([]);
   const authToken = getFromLocalStorage("authToken");
   const isLoggedIn = !either(isNil, isEmpty)(authToken) && authToken !== "null";
 
@@ -37,14 +44,28 @@ const App = () => {
     }
   };
 
+  const fetchRedirections = async () => {
+    try {
+      setLoading(true);
+      const response = await redirectionsApi.list();
+      setRedirections(response.data.redirections);
+      setLoading(false);
+    } catch (error) {
+      logger.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     initializeLogger();
     registerIntercepts();
     fetchAuthenticationStatus();
+    fetchRedirections();
     setAuthHeaders(setLoading);
   }, []);
 
-  if (loading) {
+  if (loading || redirections.length === 0) {
     return (
       <div className="h-screen">
         <PageLoader />
@@ -56,6 +77,16 @@ const App = () => {
     <Router>
       <ToastContainer />
       <Switch>
+        {redirections.map((redirection, index) => {
+          return (
+            <Redirect
+              key={index}
+              exact
+              from={redirection.from_path}
+              to={redirection.to_path}
+            />
+          );
+        })}
         <Route exact path="/" component={Dashboard} />
         <Route exact path="/articles/create" component={CreateArticle} />
         <Route exact path="/article/:slug" component={ShowArticle} />

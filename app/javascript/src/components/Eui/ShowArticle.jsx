@@ -98,7 +98,7 @@ const ShowArticle = () => {
                 </div>
               </div>
             </div>
-            <div>{articleDetails.body}</div>
+            <div className="whitespace-pre-wrap">{articleDetails.body}</div>
           </div>
         </div>
       </div>
